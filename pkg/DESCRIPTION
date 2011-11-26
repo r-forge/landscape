@@ -1,0 +1,11 @@
+Package: landscape
+Type: Package
+Title: What the package does (short line)
+Version: 0.1
+Date: 2011-11-23
+Depends: methods, raster, sp
+Author: the authors
+Maintainer: Who to complain to <yourfault@somewhere.net>
+Description: More about what it does (maybe more than one line)
+License: GPL (>=3)
+LazyLoad: yes
