@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "stats.h"
-	
+#include <R.h> 	
 
 int patch_size (startcol,startrow,class)
 short	startcol;
@@ -48,18 +48,18 @@ short   class;
 
 	check = (char *) calloc ((unsigned)size,sizeof(char));
 	if (check == NULL) {
-	   printf ("\nERROR! patchsize: can not allocate space for check!");
-	   exit(-1);
+	   Rprintf ("\nERROR! patchsize: can not allocate space for check!");
+	   return(-1);
 	}
 	stackx = (short *) calloc ((unsigned)size,sizeof(short));
 	if (stackx == NULL) {
-	   printf ("\nERROR! patchsize: can not allocate space for stackx!");
-	   exit(-1);
+	   Rprintf ("\nERROR! patchsize: can not allocate space for stackx!");
+	   return(-1);
 	}
 	stacky = (short *) calloc ((unsigned)size,sizeof(short));
 	if (stacky == NULL) {
-	   printf ("\nERROR! patchsize: can not allocate space for stacky!");
-	   exit(-1);
+	   Rprintf ("\nERROR! patchsize: can not allocate space for stacky!");
+	   return(-1);
 	}
 
 /*
@@ -151,18 +151,18 @@ short   class;
 		          new_size = size * 2;
 			  new_ck = (char *)calloc((unsigned)new_size,sizeof(char));
 			  if (new_ck == NULL) {
-			    printf ("\nERROR! patchsize: can not allocate space for new_ck");
-			    exit(-1);
+			    Rprintf ("\nERROR! patchsize: can not allocate space for new_ck");
+			    return(-1);
 			  }
 			  new_x = (short *)calloc((unsigned)new_size,sizeof(short));
 			  if (new_x == NULL) {
-			    printf ("\nERROR! patchsize: can not allocate space for new_x");
-	 		    exit(-1);
+			    Rprintf ("\nERROR! patchsize: can not allocate space for new_x");
+	 		    return(-1);
 			  }
 			  new_y = (short *)calloc((unsigned)new_size,sizeof(short));
 			  if (new_y == NULL) {
-			    printf ("\nERROR! patchsize: can not allocate space for new_y");
-	 		    exit(-1);
+			    Rprintf ("\nERROR! patchsize: can not allocate space for new_y");
+	 		    return(-1);
 			  }
 			  for (nn=0; nn < new_size; nn++) {
 			    if (nn < size) {
@@ -173,9 +173,9 @@ short   class;
 			    else 
 			        new_ck[nn] = TRUE;
 			  }
-			  cfree (check);
-			  cfree (stackx);
-			  cfree (stacky);
+			  free (check);
+			  free (stackx);
+			  free (stacky);
 			  check = new_ck;
 			  stackx = new_x;
 			  stacky = new_y;
@@ -202,9 +202,9 @@ short   class;
 	   }
 	}
 
-	cfree (stackx);
-	cfree (stacky);
-	cfree (check);
+	free (stackx);
+	free (stacky);
+	free (check);
 
 	return (numpts);
 }

@@ -20,6 +20,8 @@
 #include <stdlib.h>
 #include "erdas.h"
 #include "stats.h"
+#include <R.h>
+
 
 void read_header (filename)
 char 	*filename;
@@ -42,14 +44,14 @@ char 	*filename;
 	if (data_type == 6) { /* IDRISI format */
 	  wholename = (char* ) malloc(strlen(filename)+5);
 	  if (!wholename) {
-	    printf("\nERROR allocating space for filename %s\n",filename);
-	    exit(-1);
+	    Rprintf("\nERROR allocating space for filename %s\n",filename);
+	    return;
 	  }
 	  strcpy(wholename,filename);
 	  strcat(wholename,".doc");
 	  if ((fp = fopen(wholename,"r")) == NULL) {
-	    printf("\nERROR reading file: %s\n",wholename);
-	    exit(-1);
+	    Rprintf("\nERROR reading file: %s\n",wholename);
+	    return;
 	  }
 	  
 	  /* read the input parameters from the IDRISI file */
@@ -75,8 +77,8 @@ char 	*filename;
 	  if (xsize == ysize) 
 	    cellsize = xsize;
 	  else {
-	    printf("\nERROR  cells are not square\n");
-	    exit(-1);
+	    Rprintf("\nERROR  cells are not square\n");
+	    return;
 	  }
 	  free(wholename);
 	  return;
@@ -87,8 +89,8 @@ char 	*filename;
  *  Open image file
  */
         if ((fp=fopen(filename,"rb")) == NULL) {
-           printf ("\nERROR opening image file: %s\n",filename);
-           exit(-1);
+           Rprintf ("\nERROR opening image file: %s\n",filename);
+           return;
         }
 
 
@@ -119,6 +121,6 @@ char 	*filename;
 	}
 
 	fclose (fp);
-	printf ("\nNumber of rows, cols: %d, %d",num_rows,num_cols);
+	Rprintf ("\nNumber of rows, cols: %d, %d",num_rows,num_cols);
 
 }

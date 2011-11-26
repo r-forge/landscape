@@ -19,6 +19,8 @@
  *********************************************************/
 #include <stdlib.h>
 #include <string.h>
+#include <R.h>
+
 
 void set_char (arrayptr,row,value)
 char	**arrayptr;
@@ -32,7 +34,7 @@ char	*value;
 /* 
  *  Free the previous label (if any) 
  */
-	if (arrayptr[row]) cfree(arrayptr[row]);
+	if (arrayptr[row]) free(arrayptr[row]);
 	arrayptr[row] = NULL;
 
 /* 
@@ -42,7 +44,7 @@ char	*value;
 
 	arrayptr[row] = (char *) calloc((unsigned)length,sizeof(char));
 	if (!arrayptr[row]) {
-	   printf("\nERROR: could not allocate space for descriptive label\n");
+	   Rprintf("\nERROR: could not allocate space for descriptive label\n");
 	   exit (-1);
 	}
 

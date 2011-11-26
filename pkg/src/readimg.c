@@ -26,6 +26,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "stats.h"
+#include <R.h>
+
 
 static void copyimage();
 
@@ -39,8 +41,8 @@ char	alter_orig;
         if (!orig_image) {
 	   orig_image = (short *) calloc ((unsigned)num_rows*num_cols,sizeof(short));
 	   if (orig_image == NULL) {
-	      printf ("\nERROR! Can not allocate space for image copy\n");
-	      exit(-1);
+	      Rprintf ("\nERROR! Can not allocate space for image copy\n");
+	      return;
 	   }
 
 	   switch (data_type) {
@@ -62,13 +64,13 @@ char	alter_orig;
 		   &max_class);
 		break;
 
-	      case 5:
-	        read_erdas (imagename,image,&min_class,&max_class);
-		break;
+	      //case 5:
+	      //  read_erdas (imagename,image,&min_class,&max_class);
+		//break;
 
-	      case 6:
-                read_idrisi (imagename,image,&min_class,&max_class);
-		break;
+	     // case 6:
+         //      read_idrisi (imagename,image,&min_class,&max_class);
+		//break;
 	   }
 
 	   copyimage(image,orig_image);

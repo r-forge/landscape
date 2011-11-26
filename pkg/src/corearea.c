@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "stats.h"
-	
+#include <R.h> 	
 
 int num_core_area_patches(numpts)
 int    numpts;
@@ -43,13 +43,13 @@ int    numpts;
  */
 	temp_x = (short *) calloc ((unsigned)numpts,sizeof(short));
 	if (temp_x == NULL) {
-	   printf ("\nERROR! corearea: can not allocate space for temp_x");
-	   exit(-1);
+	   Rprintf ("\nERROR! corearea: can not allocate space for temp_x");
+	   return(-1);
 	}
 	temp_y = (short *) calloc ((unsigned)numpts,sizeof(short));
 	if (temp_y == NULL) {
-	   printf ("\nERROR! corearea: can not allocate space for temp_y");
-	   exit(-1);
+	   Rprintf ("\nERROR! corearea: can not allocate space for temp_y");
+	   return(-1);
 	}
 	npatches = 0;
 	pts = 0;
@@ -171,8 +171,8 @@ int    numpts;
 	      }
 	   }
 	}
-	cfree (temp_x);
-	cfree (temp_y);
+	free (temp_x);
+	free (temp_y);
 
 /*
  *  Return the number of core area patches in this patch.

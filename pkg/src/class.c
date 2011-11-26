@@ -17,6 +17,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "stats.h"
+#include <stdlib.h>
+#include <R.h> 
 
 
 void class_statistics(class,index)
@@ -65,13 +67,13 @@ short	index;
  */
 	x = (double *) calloc ((unsigned)num_patches,sizeof(double));
 	if (x == NULL) {
-	   printf ("\nERROR! class_statistics: Can not allocate space for x!");
-	   exit(-1);
+	   Rprintf ("\nERROR! class_statistics: Can not allocate space for x!");
+	   return;
 	}
 	y = (double *) calloc ((unsigned)num_patches,sizeof(double));
 	if (y == NULL) {
-	   printf ("\nERROR! class_statistics: Can not allocate space for y!");
-	   exit(-1);
+	   Rprintf ("\nERROR! class_statistics: Can not allocate space for y!");
+	   return;
 	}
 	ptrx = x;
 	ptry = y;
@@ -198,8 +200,8 @@ short	index;
  *  Return if the user does not want to write out class statistics.
  */
 	if (!class_stats) {
-	   cfree(ptrx);
-	   cfree(ptry);
+	   free(ptrx);
+	   free(ptry);
 	   return;
 	}
 
@@ -207,13 +209,13 @@ short	index;
  *  Open output files (.full and .class file)
  */
 	if ((out1=fopen(file4,"a")) == NULL) {
-	   printf ("\nERROR! Can not open file: %s\n",file4);
-	   exit(-1);
+	   Rprintf ("\nERROR! Can not open file: %s\n",file4);
+	   return;
 	}
 
 	if ((out2=fopen(file2,"a")) == NULL) {
-	   printf ("\nERROR! Can not open file: %s\n",file2);
-	   exit(-1);
+	   Rprintf ("\nERROR! Can not open file: %s\n",file2);
+	   return;
 	}
 
 
@@ -649,7 +651,7 @@ short	index;
 	fclose (out1);
 	fclose (out2);
 
-	cfree (ptrx);
-	cfree (ptry);
+	free (ptrx);
+	free (ptry);
 }
 

@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "stats.h"
+#include <R.h>
 
 void read_weights (filename)
 char *filename;
@@ -35,11 +36,11 @@ char *filename;
 	char	string[90];
 
         if ((fp = fopen(filename,"r")) == NULL) {
-              printf ("\nERROR opening file: %s\n",filename); 
-	      exit(-1);
+              Rprintf ("\nERROR opening file: %s\n",filename); 
+	      return;
         }
 
-	printf ("\n\n... reading weight file: %s ...\n",filename);
+	Rprintf ("\n\n... reading weight file: %s ...\n",filename);
 
 /*
  *  Read the file once to find the min, max classes in the weight file.
@@ -59,9 +60,9 @@ char *filename;
 	fclose (fp);
 
 	if (min_class < min_wt || max_class > max_wt) {
-	   printf ("\nERROR! The weight file does not contain the min");
-	   printf ("\nand/or max class value in the landscape!!");
-	   exit(-1);
+	   Rprintf ("\nERROR! The weight file does not contain the min");
+	   Rprintf ("\nand/or max class value in the landscape!!");
+	   return;
 	}
 
 
@@ -69,8 +70,8 @@ char *filename;
 
 	contrast = (float *) calloc ((unsigned)num_wt*num_wt,sizeof(float));
 	if (contrast == NULL) {
-	   printf ("\nERROR! read_weight: can not allocate space for contrast!");
-	   exit(-1);
+	   Rprintf ("\nERROR! read_weight: can not allocate space for contrast!");
+	   return;
 	}
 	
 /*
@@ -78,8 +79,8 @@ char *filename;
  */
 
         if ((fp = fopen(filename,"r")) == NULL) {
-              printf ("\nERROR opening file: %s\n",filename); 
-	      exit(-1);
+              Rprintf ("\nERROR opening file: %s\n",filename); 
+	      return;
         }
 
         while (!feof(fp)) {

@@ -12,11 +12,18 @@
  *
  *  Date:  10 June 1992
  *
+ *  Modifications:
+ *	07-23-96 BJM
+ *	   The default C compiler on the IBM 615 machines (XL C
+ *	   compiler version 1.3.0.24) defaults to unsigned char.
+ * 	   Must explicitly specify signed when needed.
+ *
  *  ID:  $Id: writesvf.c,v 2.3 1995/01/18 17:31:27 marks Exp marks $
  ****************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "stats.h"
+#include <R.h>
 
 
 void write_svf (filename,imageptr)
@@ -24,31 +31,34 @@ char	*filename;
 short	*imageptr;
 {
 	FILE 		*out;
-	char     	flag;
 	short		i,j,k;
 	short		sum;
 	short		value1,value2;
 	short		*data;
-	unsigned char   *repeat;
 	unsigned short  *value;
 	unsigned short  numpairs;
+	unsigned char   *repeat;
+/*
+ *  7-23-96 BJM  Changing for IBM compiler -- default is unsigned char
+ */
+	signed char    	flag;
 
 
 
 	data = (short *) calloc ((unsigned)num_cols,sizeof(short));
 	if (data == NULL) {
 	   printf ("\nERROR! write_svf: Can not allocate space for data");
-	   exit(-1);
+	   return;
 	}
 	value = (unsigned short *) calloc ((unsigned)num_cols,sizeof(short));
 	if (value == NULL) {
 	   printf ("\nERROR! write_svf: Can not allocate space for value");
-	   exit(-1);
+	   return;
 	}
 	repeat = (unsigned char *) calloc ((unsigned)num_cols,sizeof(char));
 	if (repeat == NULL) {
 	   printf ("\nERROR! write_svf: Can not allocate space for value");
-	   exit(-1);
+	   return;
 	}
 
 /*
@@ -56,7 +66,7 @@ short	*imageptr;
  */
 	if ((out = fopen(filename,"wb")) == NULL) {
 	   printf ("\nERROR! Can not open file: %s\n",filename);
-	   exit(-1);
+	   return;
 	}
 
 /*
@@ -106,7 +116,7 @@ short	*imageptr;
 	   } 
 	   if ((short)numpairs > num_cols) {
 		printf ("\nERROR! NUMPAIRS > NCOLS!");
-		exit(-1);
+		return;
 	   }
 	   fwrite (&numpairs,sizeof(unsigned short),1,out);
 	   sum = 0;
@@ -120,13 +130,13 @@ short	*imageptr;
 		printf ("\nsum,num_cols: %d,%d\n",sum,num_cols);
 	        for (j=0; j < (short)numpairs; j++) 
 	  	   printf ("\n%d,%d",repeat[j],value[j]);
-	        exit(-1);
+	        return;
 	   }
 	}
 	
 	fclose (out);
-	cfree (data);
-	cfree (value);
-	cfree (repeat);
+	free (data);
+	free (value);
+	free (repeat);
 }
 

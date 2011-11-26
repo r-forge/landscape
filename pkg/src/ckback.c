@@ -15,6 +15,7 @@
  *  ID:  $Id: ckback.c,v 1.3 1995/04/12 19:19:14 marks Exp marks $
  *****************************************************************************/
 #include "stats.h"
+#include <R.h> 
 
 void check_background (imageptr)
 short	*imageptr;
@@ -33,7 +34,7 @@ short	*imageptr;
 	char	positive,negative;
 
 	
-	printf ("\nVerifying that background patches are classified correctly ....\n");
+	Rprintf ("\nVerifying that background patches are classified correctly ....\n");
 
 	for (i=0; i < num_rows; i++) {
 	   for (j=0; j < num_cols; j++) {
@@ -109,31 +110,31 @@ short	*imageptr;
 
 
 		 if (positive && negative)  {
-		    printf ("\n\n   WARNING!  A background patch containing the cell row %d",i);
-		    printf ("\n   col %d (size: %d) borders the landscape boundary.  It has been",
+		    Rprintf ("\n\n   WARNING!  A background patch containing the cell row %d",i);
+		    Rprintf ("\n   col %d (size: %d) borders the landscape boundary.  It has been",
                        j,numpts);
-		    if (value == -990) printf ("\n   classified as interior background.");
-		    if (value == -999) printf ("\n   classified as exterior background.");
-		    printf ("  If this classification is wrong ");
-		    printf ("\n   these indices may be wrong:  total edge, edge density, landscape");
-		    printf ("\n   shape, contrast weighted edge density, and total edge contrast index.");
+		    if (value == -990) Rprintf ("\n   classified as interior background.");
+		    if (value == -999) Rprintf ("\n   classified as exterior background.");
+		    Rprintf ("  If this classification is wrong ");
+		    Rprintf ("\n   these indices may be wrong:  total edge, edge density, landscape");
+		    Rprintf ("\n   shape, contrast weighted edge density, and total edge contrast index.");
 
 		    if (background < 0) {
-			printf ("\n   Fragstats expects a positive value for background and you");
-		        printf ("\n   entered %d which would cause these problems.\n",background);
+			Rprintf ("\n   Fragstats expects a positive value for background and you");
+		        Rprintf ("\n   entered %d which would cause these problems.\n",background);
 		    }
 
 		 }
 
 		 if (interior_background && value != -990 ) {
-		    printf ("\n   WARNING! reclassifying exterior background patch to interior -");
-	            printf ("  %d cells",numpts);
+		    Rprintf ("\n   WARNING! reclassifying exterior background patch to interior -");
+	            Rprintf ("  %d cells",numpts);
 		    for (k=0; k < numpts; k++)
 		       setshort (imageptr,num_cols,stacky[k],stackx[k],-890);
 		 }
 		 if (exterior_background && value != -999 ) {
-		    printf ("\n   WARNING! reclassifying interior background patch to exterior -");
-	            printf (" %d cells",numpts);
+		    Rprintf ("\n   WARNING! reclassifying interior background patch to exterior -");
+	            Rprintf (" %d cells",numpts);
 		    for (k=0; k < numpts; k++)
 		       setshort (imageptr,num_cols,stacky[k],stackx[k],-899);
 		 }
@@ -142,7 +143,7 @@ short	*imageptr;
 	   }     /* end num_cols loop  */
 	}        /* end num rows loop  */
 
-	printf ("\n");
+	Rprintf ("\n");
 /*
  *  get_patch sets all patch cells to -777; set these back to background (-999)
  *  before saving the image.

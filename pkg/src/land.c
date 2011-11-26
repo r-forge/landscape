@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "stats.h"
-
+#include <R.h> 
 
 void landscape_statistics ()
 {
@@ -42,12 +42,12 @@ void landscape_statistics ()
  *  Open output files
  */
 	if ((out1=fopen(file4,"a")) == NULL) {
-	   printf ("\nERROR! Can not open file: %s\n",file4);
-	   exit(-1);
+	   Rprintf ("\nERROR! Can not open file: %s\n",file4);
+	   return;
 	}
 	if ((out2=fopen(file3,"a")) == NULL) {
-	   printf ("\nERROR! Can not open file: %s\n",file3);
-	   exit(-1);
+	   Rprintf ("\nERROR! Can not open file: %s\n",file3);
+	   return;
 	}
 
 /*

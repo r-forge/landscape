@@ -24,6 +24,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "stats.h"
+#include <R.h>
+
 
 void write_patch (class,index,npatches)
 short   class;
@@ -53,13 +55,13 @@ int 	npatches;
  *  Open output files
  */
 	if ((out1=fopen(file4,"a")) == NULL) {
-	   printf ("\nERROR! Can not open file: %s\n",file4);
-	   exit(-1);
+	   Rprintf ("\nERROR! Can not open file: %s\n",file4);
+	   return;
 	}
 
 	if ((out2=fopen(file1,"a")) == NULL) {
-	   printf ("\nERROR! Can not open file: %s\n",file1);
-	   exit(-1);
+	   Rprintf ("\nERROR! Can not open file: %s\n",file1);
+	   return;
 	}
 
 

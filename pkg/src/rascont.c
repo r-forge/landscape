@@ -16,7 +16,8 @@
 #include <stdio.h>
 #include <math.h>
 #include "stats.h"
-
+#include <stdlib.h>
+#include <R.h> 
 
 float raster_contagion ()
 {
@@ -41,13 +42,13 @@ float raster_contagion ()
 
 	adj = (int *) calloc ((unsigned)size,sizeof(int));
 	if (adj == NULL) {
-	   printf ("\nERROR! rascont: Can not allocate space for adj!");
-	   exit(-1);
+	   Rprintf ("\nERROR! rascont: Can not allocate space for adj!");
+	   return(-1);
 	}
 	carea = (int *) calloc ((unsigned)size,sizeof(int));
 	if (carea == NULL) {
-	   printf ("\nERROR! rascont: Can not allocate space for carea!");
-	   exit(-1);
+	   Rprintf ("\nERROR! rascont: Can not allocate space for carea!");
+	   return(-1);
 	}
 
 /*
@@ -132,8 +133,8 @@ float raster_contagion ()
  */
 	contagion = (sum / (2.0 * log((double)total_num_classes))) + 1.0;
 
-	cfree (adj);
-	cfree (carea);
+	free (adj);
+	free (carea);
 
 	return (contagion);
 }

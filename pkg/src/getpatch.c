@@ -19,7 +19,7 @@
  *  ID:  $Id: getpatch.c,v 2.1 1994/04/01 17:47:19 marks Exp $
  **************************************************************/
 #include "stats.h"
-	
+#include <R.h> 	
 
 int get_patch (startcol,startrow,class)
 short	startcol;
@@ -111,12 +111,12 @@ short   class;
 
 			if (getshort(image,num_cols,yptr,xptr) == class) {
 			   if (numpts >= MAX_PATCH_SIZE) {
-			     printf ("\nERROR! There are more than %d points",MAX_PATCH_SIZE);
-		             printf ("\n  in this patch.  Currently, the maximum");
-		             printf ("\n  number of patch cells is %d!",MAX_PATCH_SIZE);
-			     printf ("\n  numpts: %d",numpts);
-		             printf ("\n  EXITING ....\n");
-			     exit(-1);
+			     Rprintf ("\nERROR! There are more than %d points",MAX_PATCH_SIZE);
+		             Rprintf ("\n  in this patch.  Currently, the maximum");
+		             Rprintf ("\n  number of patch cells is %d!",MAX_PATCH_SIZE);
+			     Rprintf ("\n  numpts: %d",numpts);
+		             Rprintf ("\n  EXITING ....\n");
+			     return(-1);
                 	   }
 			   setshort(image,num_cols,yptr,xptr,-777);
 			   stackx[numpts] = xptr;

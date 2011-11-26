@@ -18,6 +18,7 @@
  ***************************************************************/
 #include <stdio.h>
 #include "stats.h"
+#include <R.h>
 
 
 void write_binary(filename,image_ptr,option)
@@ -33,15 +34,15 @@ short option;
  *  Open output image file
  */
 	if ((fp = fopen(filename,"wb")) == NULL) {
-		printf ("\nERROR! Can not open file: %s\n",filename);
-		exit(-1);
+		Rprintf ("\nERROR! Can not open file: %s\n",filename);
+		return;
 	}
 
 /*
  *  Write 8 or 16 bit binary stream file
  */
 	if (option == 1) {
-	   printf ("\nWriting 8 bit binary file ... \n");
+	   Rprintf ("\nWriting 8 bit binary file ... \n");
 	   for (i=0; i < num_rows*num_cols; i++) {
 	      fputc ((unsigned char)*image_ptr,fp);
 	      image_ptr ++;
@@ -49,7 +50,7 @@ short option;
 	}
 
 	else {
-	   printf ("\nWriting 16 bit binary file ... \n");
+	   Rprintf ("\nWriting 16 bit binary file ... \n");
 	   fwrite (image_ptr,sizeof(short),num_rows*num_cols,fp);
 	}
 

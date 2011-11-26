@@ -18,6 +18,12 @@
  *
  *  Date:  11 December 1992
  *
+ *  Modifications: 
+ *	07-23-96 BJM
+ *	   The compiler for the IBM 615 machines (XL C compiler
+ *	   version 1.3.0.24) defaults to unsigned chars.  Must
+ *	   explicitly specify "signed".
+ *
  *  ID: $Id: readbin.c,v 2.4 1994/10/05 16:07:05 marks Exp marks $
  ***************************************************************/
 #include <stdio.h>
@@ -32,10 +38,13 @@ short *min,*max;
 {
 
 	FILE	*fp;
-	char	cval;
 	short	*ptr;
 	int	i,j;
 	int	count_bck,count_intbck;
+/*
+ *  7-23-96 BJM  For IBM compiler -- default is unsigned char
+ */
+	signed char  cval;
 
 
 
@@ -58,7 +67,7 @@ short *min,*max;
  */
 	if ((fp = fopen(filename,"rb")) == NULL) {
 		printf ("\nERROR! Can not open file: %s\n",filename);
-		exit(-1);
+		return;
 	}
 
 /*

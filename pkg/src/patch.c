@@ -25,6 +25,8 @@
 #include <math.h>
 #include <stdio.h>
 #include "stats.h"
+#include <stdlib.h>
+#include <R.h> 
 
 #include "patch.h"
 patchdef *patches = (void *) 0; /* TM 28/09/93 */
@@ -61,6 +63,12 @@ int	patch;
 	perim = interior = exterior = 0;
 	extracon = 0.0;
 
+// added by RH 2011-11
+// to avoid compiler warning, not sure if this is OK
+	ppx = 0;
+    ppy = 0;
+
+	
 /*
  *   Allocate space for the patches structure (if it hasn't been allocated
  *   yet).  Initially, allocate space for the largest patch in the 
@@ -71,22 +79,22 @@ int	patch;
 	   if (!patches) {
 	      patches = (patchdef *) calloc((unsigned)MAX_PATCHES, sizeof(patchdef));
 	      if (!patches) {
-	        printf("\nERROR!  Cannot allocate space for patch structure\n");
-	        exit(-1);
+	        Rprintf("\nERROR!  Cannot allocate space for patch structure\n");
+	        return;
 	      }
 	   }
 	   if (!px) {
 	      px = (short *) calloc((unsigned)MAX_PATCH_SIZE,sizeof(short));
 	      if (!px) {
-	        printf("\nERROR!  Cannot allocate space for patch structure\n");
-	        exit(-1);
+	        Rprintf("\nERROR!  Cannot allocate space for patch structure\n");
+	        return;
 	      }
 	   }
 	   if (!py) {
 	      py = (short *) calloc((unsigned)MAX_PATCH_SIZE,sizeof(short));
 	      if (!px) {
-	        printf("\nERROR!  Cannot allocate space for patch structure\n");
-	        exit(-1);
+	        Rprintf("\nERROR!  Cannot allocate space for patch structure\n");
+	        return;
 	      }
 	   }
 /*
@@ -259,18 +267,18 @@ int	patch;
  */
 	if (do_nndist) { /* TM 28/09/93 */
 	   if (patches[patch].px) {
-	      cfree(patches[patch].px);
+	      free(patches[patch].px);
 	      patches[patch].px = NULL;
 	   }
 	   if (patches[patch].py) {
-	      cfree(patches[patch].py);
+	      free(patches[patch].py);
 	      patches[patch].py = NULL;
 	   }
 	   patches[patch].px = (short*) calloc((unsigned)exterior,sizeof(short));
 	   patches[patch].py = (short*) calloc((unsigned)exterior,sizeof(short));
 	   if (!patches[patch].px || !patches[patch].py) {
-	      printf("\nERROR Failed to allocate memory for patch boundary\n");
-	      exit(-1);
+	      Rprintf("\nERROR Failed to allocate memory for patch boundary\n");
+	      return;
 	   }
 	   ppx = px;
 	   ppx2 = patches[patch].px;
@@ -300,8 +308,8 @@ int	patch;
           class1 --;
           newclass --;
 	  if (class1 <= -32768 || newclass <= -32768) {
- 	     printf ("\n  patch.c -- fatal error!");
-	     exit(-1);
+ 	     Rprintf ("\n  patch.c -- fatal error!");
+	     return;
 	  }
           flag = FALSE;
  

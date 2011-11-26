@@ -19,6 +19,8 @@
  *  ID:  $Id: getchar.c,v 2.1 1994/04/01 17:46:36 marks Exp $
  **************************************************************/
 #include <string.h>
+#include <R.h>
+#include <stdio.h>
 
 void get_char (arrayptr,row,max_len,value)
 char	**arrayptr;

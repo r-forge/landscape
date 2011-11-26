@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "stats.h"
+#include <R.h>
 
 
 void read_ascii (filename,image_ptr,min,max)
@@ -36,8 +37,8 @@ short	*min,*max;
 	
 
 	if ((fp = fopen(filename,"r")) == NULL) {
-		printf("\nERROR reading file: %s\n",filename);
-		exit(-1);
+		Rprintf("\nERROR reading file: %s\n",filename);
+		return;
 	}
 
 	count_bck = count_intbck = 0;
@@ -113,18 +114,18 @@ short	*min,*max;
 
 
 	bcode = 0;
-        printf ("\n");
+        Rprintf ("\n");
         if (count_bck > 0) {
-           printf ("\n... %d cells of background exterior to the landscape found",
+           Rprintf ("\n... %d cells of background exterior to the landscape found",
 	      count_bck);
 	   bcode ++;
 	}
         if (count_intbck > 0) {
-           printf ("\n... %d cells of background interior to the landscape found",
+           Rprintf ("\n... %d cells of background interior to the landscape found",
 	      count_intbck);
 	   bcode ++;
 	}
 	if (count_bck == 0 && count_intbck == 0)
-	   printf ("\n... landscape does not contain background");
+	   Rprintf ("\n... landscape does not contain background");
 
 }

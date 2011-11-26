@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "stats.h"
+#include <R.h>
 
 
 void write_ascii (filename,image_ptr)
@@ -29,8 +30,8 @@ short   *image_ptr;
 	
 
 	if ((fp = fopen(filename,"w")) == NULL) {
-		printf("\nERROR writing file: %s\n",filename);
-		exit(-1);
+		Rprintf("\nERROR writing file: %s\n",filename);
+		return;
 	}
 
 	for (i=0; i < num_rows; i++) {

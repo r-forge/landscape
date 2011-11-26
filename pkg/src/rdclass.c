@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "stats.h"
+#include <R.h>
 
 void read_classnames (filename)
 char	*filename;
@@ -39,12 +40,12 @@ char	*filename;
 	short	classnum;
 	int	i;
 
-	printf ("\n ... reading classnames file: %s ... \n\n",filename);
+	Rprintf ("\n ... reading classnames file: %s ... \n\n",filename);
 
 	if ((fp = fopen(filename,"r")) == NULL) {
-	   printf ("\nERROR! Can not open file: %s\n",filename);
-	   printf ("\n  exiting .....");
-	   exit(-1);
+	   Rprintf ("\nERROR! Can not open file: %s\n",filename);
+	   Rprintf ("\n  exiting .....");
+	   return;
 	}
 
 

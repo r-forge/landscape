@@ -15,6 +15,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include "stats.h"
+#include <R.h>
+#include <Rinternals.h>
+#include "Rdefines.h"
 
 
 void get_sizes()
@@ -40,26 +43,26 @@ void get_sizes()
 
 	class_exists = (char *) calloc ((unsigned)MAX_CLASSES,sizeof(char));
 	if (class_exists == NULL) {
-	   printf ("\nERROR! Can not allocate space for class_exists!");
-	   exit(-1);
+	   Rprintf ("\nERROR! Can not allocate space for class_exists!");
+	   return;
 	}
 
 	all_classes = (char *) calloc ((unsigned)MAX_CLASSES,sizeof(char));
 	if (all_classes == NULL) {
-	   printf ("\nERROR! Can not allocate space for all_classes");
-	   exit(-1);
+	   Rprintf ("\nERROR! Can not allocate space for all_classes");
+	   return;
 	}
 	
 	npatches = (int *) calloc ((unsigned)MAX_CLASSES,sizeof(int));
 	if (npatches == NULL) {
-	   printf ("\nERROR! Can not allocate space for npatches");
-	   exit(-1);
+	   Rprintf ("\nERROR! Can not allocate space for npatches");
+	   return;
 	}
 	
 	npts = (int *) calloc ((unsigned)MAX_CLASSES,sizeof(int));
 	if (npts == NULL) {
-	   printf ("\nERROR! Can not allocate space for npts");
-	   exit(-1);
+	   Rprintf ("\nERROR! Can not allocate space for npts");
+	   return;
 	}
 
 
@@ -130,11 +133,11 @@ void get_sizes()
  *  the total number of classes that exist (including any classes
  *  in the landscape border).
  */
-	printf ("\n");
+	Rprintf ("\n");
 	for(i=0; i < MAX_CLASSES; i++) 
-	   if (class_exists[i]) printf ("\nClass %5d: %9d cells, %8d patches",
+	   if (class_exists[i]) Rprintf ("\nClass %5d: %9d cells, %8d patches",
 		i,npts[i],npatches[i]);
-	printf ("\n");
+	Rprintf ("\n");
 
 
 	MAX_PATCHES = 0;
@@ -159,8 +162,8 @@ void get_sizes()
  */
 	patchtype = (short *) calloc ((unsigned)NUM_CLASSES,sizeof(short));
 	if (patchtype == NULL) {
-	   printf ("\nERROR! Can not allocate space for patchtype!");
-	   exit(-1);
+	   Rprintf ("\nERROR! Can not allocate space for patchtype!");
+	   return;
 	}
 
 	j = 0;
@@ -172,15 +175,15 @@ void get_sizes()
 	}
 
 
-	printf ("\nnumber of classes: %d",NUM_CLASSES);
-	printf ("\nmax patches/class: %d",MAX_PATCHES);
+	Rprintf ("\nnumber of classes: %d",NUM_CLASSES);
+	Rprintf ("\nmax patches/class: %d",MAX_PATCHES);
 
 	if (MAX_BCKGRND_SIZE > MAX_PATCH_SIZE) {
-	   printf ("\nmax_patch_size: %d (background/border patch)",MAX_BCKGRND_SIZE);
+	   Rprintf ("\nmax_patch_size: %d (background/border patch)",MAX_BCKGRND_SIZE);
 	   MAX_PATCH_SIZE = MAX_BCKGRND_SIZE;
 	}
 	else
-	   printf ("\nmax patch size: %d\n",MAX_PATCH_SIZE);
+	   Rprintf ("\nmax patch size: %d\n",MAX_PATCH_SIZE);
 	
 
 /*
@@ -196,10 +199,10 @@ void get_sizes()
 	}
 
 
-	cfree (npatches);
-	cfree (all_classes);
-	cfree (class_exists);
-	cfree (npts);
+	free (npatches);
+	free (all_classes);
+	free (class_exists);
+	free (npts);
 
 	return;
 }

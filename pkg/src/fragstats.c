@@ -6,17 +6,16 @@
  *
  *  Command Line Arguments:
  *	image_name:   name of input image file
- *  	base_name:    basename for output files;  the extensions
+ *  base_name:    basename for output files;  the extensions
  *		      .patch, .class, .land, .full will be added to
  *		      the basename for output files.
  *	cellsize:     size of cells in meters (cells must be square)
- *	edge_dist:    the distance from patch edges to use in
- *		      determing core area
+ *	edge_dist:    the distance from patch edges to use in determing core area
  *	data_type:    type of image file:  1 - arc/info SVF file,
- *		      2 - ascii file,      3 - 8 bit binary stream file
+ *		      		  2 - ascii file,      3 - 8 bit binary stream file
  *                    4 - 16 bit binary    5 - ERDAS file
  *                    6 - IDRISI
- *      #rows:        if data_type is not 1, 5, or 6 , the number of rows 
+ *  #rows:        if data_type is not 1, 5, or 6 , the number of rows 
  *		      in the image is required (assumes no image header)
  *	#cols:        if data_type is not 1, 5 or 6, the number of columns
  *		      in the image is required (assumes no image header)
@@ -99,26 +98,44 @@
  *       (5)  Miscellaneous little bugs fixed and improvements
  *	      made.
  *	
+ *
+ *
+ *
+ *	2011 RJ Hijmans
+ *		Major changes for use with R
+ *
+ *
  ****************************************************************/
 #include <string.h>
 #include <stdlib.h>
 #include "stats.h"
+#include <R.h> 
 
+#include <Rinternals.h>
+#include "Rdefines.h"
+#include "R_ext/Rdynload.h"
+#include <Rmath.h>
 
-int main(argc,argv)
-int	argc;
-char	*argv[];
-{
+SEXP fragstats(SEXP args) {
 	short	i,j,k;
 	short	patch_ID;
 	short	max_patch_id;
 	short	class;
  	int	numpts;
 
+	Rprintf ("\n\n\t\t            FRAGSTATS 2.0");
+	Rprintf ("\n\t PROGRAM TO CALCULATE LANDSCAPE FRAGMENTATION");
+	Rprintf (" INDICES \n\n");
+	
 
-	printf ("\n\n\t\t            FRAGSTATS 2.0");
-	printf ("\n\t PROGRAM TO CALCULATE LANDSCAPE FRAGMENTATION");
-	printf (" INDICES \n\n");
+	SEXP res;
+	int *xres;
+
+	PROTECT(res = allocVector( INTSXP, 1) );
+	xres = INTEGER(res);
+	xres[0] = 99;
+	return(res);
+	
 
 /*
  *  Call a routine that does nothing but declare space for all global
@@ -129,7 +146,7 @@ char	*argv[];
 /*
  *  Get arguments and read in files, etc.
  */
-	setup (argc,argv);
+//	setup (argc,argv);
 
 /*
  *  Initialize ....
@@ -168,13 +185,13 @@ char	*argv[];
  */
 	read_image(0);
 	boundary = boundary_edge();
-	printf ("\n");
+	Rprintf ("\n");
 
 /*
  *  Loop over all classes present.
  */
 	for (k=0; k < NUM_CLASSES; k++) {
-	   printf ("\nclass: %d",patchtype[k]);
+	   Rprintf ("\nclass: %d",patchtype[k]);
 	   class = patchtype[k];
 	   classarea = 0.0;
 	   num_patches = 0;
@@ -198,18 +215,18 @@ char	*argv[];
 
 		    if (patch_ID >= 32767) {
 		       if (id_image == 1) {
-		          printf ("\n\nERROR! Patch ID exceeds 32767 - the maximum");
-		          printf ("\nvalue for a [signed short int].  The output");
-		          printf ("\nID image will NOT contain unique IDs for each");
-		          printf ("\npatch!!  Continuing .... \n\n");
+		          Rprintf ("\n\nERROR! Patch ID exceeds 32767 - the maximum");
+		          Rprintf ("\nvalue for a [signed short int].  The output");
+		          Rprintf ("\nID image will NOT contain unique IDs for each");
+		          Rprintf ("\npatch!!  Continuing .... \n\n");
 		       }
 		       if (patch_stats && id_image <= 2) {
-		          printf ("\n\nERROR! Patch ID exceeds 32767 - the maximum");
-			  printf ("\nvalue for a [signed short int].  The output");
-			  printf ("\npatch statistics files will NOT contain unique");
-			  printf ("\nIDs for each patch!!  Continuing ...\n\n");
+		          Rprintf ("\n\nERROR! Patch ID exceeds 32767 - the maximum");
+			  Rprintf ("\nvalue for a [signed short int].  The output");
+			  Rprintf ("\npatch statistics files will NOT contain unique");
+			  Rprintf ("\nIDs for each patch!!  Continuing ...\n\n");
 		       }
-		       printf ("\nsetting patch_id back to 0");
+		       Rprintf ("\nsetting patch_id back to 0");
 		       patch_ID = 0;
 		    }
 		    if (patch_ID > max_patch_id) max_patch_id = patch_ID;
@@ -278,6 +295,6 @@ char	*argv[];
  */
 	free_memory();
 
-	printf ("\n");
+	Rprintf ("\n");
 	return (0);
 }

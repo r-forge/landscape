@@ -19,13 +19,15 @@
 #include <string.h>
 #include "stats.h"
 #include "erdas.h"
+#include <R.h>
+
 
 
 void write_image (max_patch_id)
 short	max_patch_id;
 {
 
-	short  packtype;
+//	short  packtype;
 	char   *ptr,*out;
 	static char   outname[60] = " "; 
 
@@ -54,7 +56,7 @@ short	max_patch_id;
  *  image was overwritten!  (Used to be "strcat(out,".ID"))
  */
         strcat(outname,".ID");
-	printf ("\nOutput ID file is: %s\n",outname);
+	Rprintf ("\nOutput ID file is: %s\n",outname);
 
 
 	switch (data_type) {
@@ -68,8 +70,8 @@ short	max_patch_id;
 
 	   case 3:                      /* 8-bit binary file */
               if (max_patch_id > 255) {
-                 printf ("\nOutput ID file will be 16 bit -- patch IDs");
-                 printf ("\nexceed 255 [limit of an 8 bit image].");
+                 Rprintf ("\nOutput ID file will be 16 bit -- patch IDs");
+                 Rprintf ("\nexceed 255 [limit of an 8 bit image].");
 		 write_binary (outname,id,2);
               }
 	      else 
@@ -81,27 +83,27 @@ short	max_patch_id;
 	      write_binary (outname,id,2);
 	      break;
  
-           case 5:                      /* ERDAS file   */
+        //   case 5:                      /* ERDAS file   */
 /*
  *  3-10-95  ERROR!  Used to say packtype 0 was 4 bit image,
  *  packtype 1 was 8 bit.  An 8 bit image is packtype 0 and
  *  a 4-bit image is packtype 1!  Fixing!
  */
-	      packtype = 1;             /* 4 bit image  */
-	      if (max_patch_id > 15)
-		 packtype = 0;          /* 8 bit image  */
-	      if (max_patch_id > 255)
-		 packtype = 2;          /* 16 bit image */
+	    //  packtype = 1;             /* 4 bit image  */
+	    //  if (max_patch_id > 15)
+		// packtype = 0;          /* 8 bit image  */
+	    //  if (max_patch_id > 255)
+		// packtype = 2;          /* 16 bit image */
               
-	      write_erdas (outname,id,packtype);
-	      break;
+	    //  write_erdas (outname,id,packtype);
+	    //  break;
 
-	    case 6:                     /* IDRISI file  */
-	      packtype = 1;             /* 8 bit image  */
-	      if (max_patch_id > 255)
-		 packtype = 2;          /* 16 bit image */
+	   // case 6:                     /* IDRISI file  */
+	    //  packtype = 1;             /* 8 bit image  */
+	    //  if (max_patch_id > 255)
+		// packtype = 2;          /* 16 bit image */
 
-              write_idrisi(outname,id,2);
+        //      write_idrisi(outname,id,2);
 	      
 	}
 

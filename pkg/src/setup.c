@@ -45,7 +45,7 @@ char	*argv[];
 	else {
 	   if (argc < 6) {
     	      usage();
-	      exit(-1);
+	      return;
 	   }
 
 	   strcpy (imagename,argv[1]);      /* input image name          */
@@ -56,12 +56,12 @@ char	*argv[];
                                                svf, ascii, binary)       */
 	   if (data_type < 1 || data_type > 6) {
 	      printf ("\n\nERROR! Unsupported data type!\n\n");
-	      exit(-1);
+	      return;
 	   }
 
 	   if (data_type >= 2 && data_type <= 4 && argc < 8) {
 	      usage();                       /* #rows, #cols missing     */
-	      exit(-1);
+	      return;
 	   }
 	   if (data_type >= 2 && data_type <= 4) {
 	      num_rows = atoi(argv[6]);     /* number of rows in image   */
@@ -86,7 +86,7 @@ char	*argv[];
 	         contrast_indices = TRUE;
 		 if ((fp=fopen(weight_file,"r")) == NULL) {
 		    printf ("\nERROR! Can not open file: %s\n",weight_file);
-		    exit(-1);
+		    return;
 		 }
 		 fclose (fp);
 	      }
@@ -102,7 +102,7 @@ char	*argv[];
 		 id_image = 3;
 		 if ((fp=fopen(id_file,"r")) == NULL) {
 		    printf ("\nERROR! Can not open file: %s\n",id_file);
-		    exit(-1);
+		    return;
 		 }
 		 fclose(fp);
 	      }
@@ -114,7 +114,7 @@ char	*argv[];
 	         descriptors = TRUE;
 		 if ((fp=fopen(desc_file,"r")) == NULL) {
 		    printf ("\nERROR! Can not open file: %s\n",desc_file);
-		    exit(-1);
+		    return;
 		 }
 		 fclose(fp);
 	      }
@@ -123,7 +123,7 @@ char	*argv[];
 	      bound_wght = atof(argv[13]);
 	      if (bound_wght < 0.0 || bound_wght > 1.0) {
 		 printf ("\nERROR! Invalid contrast weight: %f\n",bound_wght);
-		 exit(-1);
+		 return;
 	      }
 	   }
 	   use_diags = TRUE;
@@ -208,7 +208,7 @@ char	*argv[];
 	if (image == NULL) {
 	   printf ("\nERROR! Can not allocate space for input");
 	   printf ("\n  image!");
-	   exit(-1);
+	   return;
 	}
 
 /*
@@ -218,7 +218,7 @@ char	*argv[];
 	   id = (short *)calloc ((unsigned)size, sizeof(short));
 	   if (id == NULL) {
 	      	printf ("\nERROR! Can not allocate space - id map");
-		exit(-1);
+		return;
  	   }
 	}
 
@@ -232,10 +232,10 @@ char	*argv[];
 		read_ascii (id_file,id,&min_class,&max_class);
 	   if (data_type == 3 || data_type == 4)
 		read_binary (id_file,id,data_type-2,&min_class,&max_class);
-	   if (data_type == 5)
-		read_erdas (id_file,id,&min_class,&max_class);
-	   if (data_type == 6)
-		read_idrisi (id_file,id,&min_class,&max_class);
+	   //if (data_type == 5)
+		//read_erdas (id_file,id,&min_class,&max_class);
+	   //if (data_type == 6)
+		//read_idrisi (id_file,id,&min_class,&max_class);
 	}
 	
 	printf ("\nInterior Background Value: %d",background);
@@ -268,11 +268,13 @@ char	*argv[];
  *  If a file containing character descriptors for each class type was
  *  input, read it in.
  */
-	if (descriptors)
-	  if (data_type == 6)                  
-             read_idrisi_desc(imagename, name); /* Tom Moore 10-93 */  
-	  else 
+	if (descriptors) {
+	  if (data_type == 6) {
+          //   read_idrisi_desc(imagename, name); /* Tom Moore 10-93 */  
+	  } else {
 	     read_classnames(desc_file);
+	  }
+	}
 
 /*
  *  7-19-94 BJM  If only negative or only postive background patches were
@@ -319,7 +321,7 @@ char	*argv[];
 	   if (newfiles) {
 	      if ((out = fopen(file1,"a")) == NULL) {
    	         printf ("\nERROR opening file: %s\n",file1);
-	         exit(-1);
+	         return;
 	      }
 	      head_patch(out);
 	      fclose (out);
@@ -333,7 +335,7 @@ char	*argv[];
            if (newfiles) { 
 	      if ((out = fopen(file2,"a")) == NULL) {
 	         printf ("\nERROR opening file: %s\n",file2);
-	         exit(-1);
+	         return;
 	      }
 	      head_class(out);
 	      fclose (out);
@@ -346,7 +348,7 @@ char	*argv[];
 	if (newfiles) {
 	   if ((out = fopen(file3,"a")) == NULL) {
 	      printf ("\nERROR opening file: %s\n",file3);
-	      exit(-1);
+	      return;
 	   }
 	   head_land(out);
 	   fclose (out);
@@ -354,7 +356,7 @@ char	*argv[];
 
 	if ((out = fopen(file4,"a")) == NULL) {
 	   printf ("\nERROR opening file: %s\n",file4);
-	   exit(-1);
+	   return;
 	}
 
 /*
