@@ -19,6 +19,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include "stats.h"
+#include <R.h> 
+
 
 
 void setup(argc,argv)
@@ -55,7 +57,7 @@ char	*argv[];
 	   data_type = atoi(argv[5]);       /* type of input image file: 
                                                svf, ascii, binary)       */
 	   if (data_type < 1 || data_type > 6) {
-	      printf ("\n\nERROR! Unsupported data type!\n\n");
+	      Rprintf ("\n\nERROR! Unsupported data type!\n\n");
 	      return;
 	   }
 
@@ -85,7 +87,7 @@ char	*argv[];
 	         strcpy(weight_file,argv[10]);  /* class weights filename*/
 	         contrast_indices = TRUE;
 		 if ((fp=fopen(weight_file,"r")) == NULL) {
-		    printf ("\nERROR! Can not open file: %s\n",weight_file);
+		    Rprintf ("\nERROR! Can not open file: %s\n",weight_file);
 		    return;
 		 }
 		 fclose (fp);
@@ -101,7 +103,7 @@ char	*argv[];
 	         strcpy(id_file,argv[11]);      /* name of ID image      */
 		 id_image = 3;
 		 if ((fp=fopen(id_file,"r")) == NULL) {
-		    printf ("\nERROR! Can not open file: %s\n",id_file);
+		    Rprintf ("\nERROR! Can not open file: %s\n",id_file);
 		    return;
 		 }
 		 fclose(fp);
@@ -113,7 +115,7 @@ char	*argv[];
 	         strcpy(desc_file,argv[12]);   /* class descriptors file */
 	         descriptors = TRUE;
 		 if ((fp=fopen(desc_file,"r")) == NULL) {
-		    printf ("\nERROR! Can not open file: %s\n",desc_file);
+		    Rprintf ("\nERROR! Can not open file: %s\n",desc_file);
 		    return;
 		 }
 		 fclose(fp);
@@ -122,7 +124,7 @@ char	*argv[];
    	   if (argc >= 14) {                   /* weight for boundary/back*/
 	      bound_wght = atof(argv[13]);
 	      if (bound_wght < 0.0 || bound_wght > 1.0) {
-		 printf ("\nERROR! Invalid contrast weight: %f\n",bound_wght);
+		 Rprintf ("\nERROR! Invalid contrast weight: %f\n",bound_wght);
 		 return;
 	      }
 	   }
@@ -172,16 +174,16 @@ char	*argv[];
  *  hand in hand -- you can't do one without the other.
  */
 	if (proximity && !do_nndist) {
-	   printf ("\n\nERROR!! The proximity indices require all");
-	   printf ("\nthe nearest neighbor calculations.  You must"); 
-	   printf ("\nselect to calculate nearest neighbor indices if");
-	   printf ("\nyou want to calculate proximity indices!");
-	   printf ("\nExiting ....\n");
+	   Rprintf ("\n\nERROR!! The proximity indices require all");
+	   Rprintf ("\nthe nearest neighbor calculations.  You must"); 
+	   Rprintf ("\nselect to calculate nearest neighbor indices if");
+	   Rprintf ("\nyou want to calculate proximity indices!");
+	   Rprintf ("\nExiting ....\n");
 	}
 /*
  *  Print image file name to screen
  */
-	printf ("\nProcessing image: %s",imagename);
+	Rprintf ("\nProcessing image: %s",imagename);
 
 
 /*
@@ -206,8 +208,8 @@ char	*argv[];
 
 	image = (short *) calloc ((unsigned)size,sizeof(short));
 	if (image == NULL) {
-	   printf ("\nERROR! Can not allocate space for input");
-	   printf ("\n  image!");
+	   Rprintf ("\nERROR! Can not allocate space for input");
+	   Rprintf ("\n  image!");
 	   return;
 	}
 
@@ -217,7 +219,7 @@ char	*argv[];
 	if (id_image != 2) {
 	   id = (short *)calloc ((unsigned)size, sizeof(short));
 	   if (id == NULL) {
-	      	printf ("\nERROR! Can not allocate space - id map");
+	      	Rprintf ("\nERROR! Can not allocate space - id map");
 		return;
  	   }
 	}
@@ -238,8 +240,8 @@ char	*argv[];
 		//read_idrisi (id_file,id,&min_class,&max_class);
 	}
 	
-	printf ("\nInterior Background Value: %d",background);
-	printf ("\nExterior Background Value: %d",-background);
+	Rprintf ("\nInterior Background Value: %d",background);
+	Rprintf ("\nExterior Background Value: %d",-background);
 
 /*
  *  Read in image data
@@ -320,7 +322,7 @@ char	*argv[];
 	   else fclose (out);
 	   if (newfiles) {
 	      if ((out = fopen(file1,"a")) == NULL) {
-   	         printf ("\nERROR opening file: %s\n",file1);
+   	         Rprintf ("\nERROR opening file: %s\n",file1);
 	         return;
 	      }
 	      head_patch(out);
@@ -334,7 +336,7 @@ char	*argv[];
 	   else fclose (out);
            if (newfiles) { 
 	      if ((out = fopen(file2,"a")) == NULL) {
-	         printf ("\nERROR opening file: %s\n",file2);
+	         Rprintf ("\nERROR opening file: %s\n",file2);
 	         return;
 	      }
 	      head_class(out);
@@ -347,7 +349,7 @@ char	*argv[];
 	else fclose (out);
 	if (newfiles) {
 	   if ((out = fopen(file3,"a")) == NULL) {
-	      printf ("\nERROR opening file: %s\n",file3);
+	      Rprintf ("\nERROR opening file: %s\n",file3);
 	      return;
 	   }
 	   head_land(out);
@@ -355,7 +357,7 @@ char	*argv[];
 	}
 
 	if ((out = fopen(file4,"a")) == NULL) {
-	   printf ("\nERROR opening file: %s\n",file4);
+	   Rprintf ("\nERROR opening file: %s\n",file4);
 	   return;
 	}
 

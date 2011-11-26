@@ -28,6 +28,7 @@
  ***************************************************************/
 #include <stdio.h>
 #include "stats.h"
+#include <R.h> 
 
 
 void read_binary (filename,image_ptr,option,min,max)
@@ -66,7 +67,7 @@ short *min,*max;
  *  Open input image file
  */
 	if ((fp = fopen(filename,"rb")) == NULL) {
-		printf ("\nERROR! Can not open file: %s\n",filename);
+		Rprintf ("\nERROR! Can not open file: %s\n",filename);
 		return;
 	}
 
@@ -163,19 +164,19 @@ short *min,*max;
 	MAX_CLASSES ++;
 
 	bcode = 0;
-        printf ("\n");
+        Rprintf ("\n");
         if (count_bck > 0) {
-           printf ("\n... %d cells of background exterior to the landscape found",
+           Rprintf ("\n... %d cells of background exterior to the landscape found",
 		count_bck);
 	   bcode ++;
 	}
         if (count_intbck > 0) {
-           printf ("\n... %d cells of background interior to the landscape found",
+           Rprintf ("\n... %d cells of background interior to the landscape found",
 		count_intbck);
 	   bcode ++;
 	}
 	if (count_intbck == 0 && count_bck == 0)
-	   printf ("\n... landscape does not contain background");
+	   Rprintf ("\n... landscape does not contain background");
 
 }
  

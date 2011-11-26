@@ -47,17 +47,17 @@ short	*imageptr;
 
 	data = (short *) calloc ((unsigned)num_cols,sizeof(short));
 	if (data == NULL) {
-	   printf ("\nERROR! write_svf: Can not allocate space for data");
+	   Rprintf ("\nERROR! write_svf: Can not allocate space for data");
 	   return;
 	}
 	value = (unsigned short *) calloc ((unsigned)num_cols,sizeof(short));
 	if (value == NULL) {
-	   printf ("\nERROR! write_svf: Can not allocate space for value");
+	   Rprintf ("\nERROR! write_svf: Can not allocate space for value");
 	   return;
 	}
 	repeat = (unsigned char *) calloc ((unsigned)num_cols,sizeof(char));
 	if (repeat == NULL) {
-	   printf ("\nERROR! write_svf: Can not allocate space for value");
+	   Rprintf ("\nERROR! write_svf: Can not allocate space for value");
 	   return;
 	}
 
@@ -65,7 +65,7 @@ short	*imageptr;
  *  Open output file
  */
 	if ((out = fopen(filename,"wb")) == NULL) {
-	   printf ("\nERROR! Can not open file: %s\n",filename);
+	   Rprintf ("\nERROR! Can not open file: %s\n",filename);
 	   return;
 	}
 
@@ -115,7 +115,7 @@ short	*imageptr;
 		}
 	   } 
 	   if ((short)numpairs > num_cols) {
-		printf ("\nERROR! NUMPAIRS > NCOLS!");
+		Rprintf ("\nERROR! NUMPAIRS > NCOLS!");
 		return;
 	   }
 	   fwrite (&numpairs,sizeof(unsigned short),1,out);
@@ -126,10 +126,10 @@ short	*imageptr;
 		sum += repeat[j];
 	   }
 	   if (sum != num_cols) { 
-		printf ("\nERROR!  More values than num_cols!");
-		printf ("\nsum,num_cols: %d,%d\n",sum,num_cols);
+		Rprintf ("\nERROR!  More values than num_cols!");
+		Rprintf ("\nsum,num_cols: %d,%d\n",sum,num_cols);
 	        for (j=0; j < (short)numpairs; j++) 
-	  	   printf ("\n%d,%d",repeat[j],value[j]);
+	  	   Rprintf ("\n%d,%d",repeat[j],value[j]);
 	        return;
 	   }
 	}

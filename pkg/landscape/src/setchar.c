@@ -45,7 +45,7 @@ char	*value;
 	arrayptr[row] = (char *) calloc((unsigned)length,sizeof(char));
 	if (!arrayptr[row]) {
 	   Rprintf("\nERROR: could not allocate space for descriptive label\n");
-	   exit (-1);
+	   return;
 	}
 
 /* 

@@ -26,6 +26,8 @@
  ***************************************************************/
 #include <stdio.h>
 #include "stats.h"
+#include <R.h> 
+
 
 void read_svf(filename,image_ptr,min,max)
 char	*filename;
@@ -46,7 +48,7 @@ short   *min,*max;
 
 	
 	if ((fp = fopen(filename,"rb")) == NULL) {
-		printf ("\nERROR reading file: %s\n",filename);
+		Rprintf ("\nERROR reading file: %s\n",filename);
 		return;
 	}
 
@@ -82,8 +84,8 @@ short   *min,*max;
 	for (i=0; i < num_rows; i++) {	
 		fread(&rowflag,sizeof(char),1,fp);
 		if (rowflag != -1 ) {
-		   printf("\nROWFLAG not -1:  %d",rowflag);
-		   printf ("\nFile [%s] probably not an SVF file\n",filename);
+		   Rprintf("\nROWFLAG not -1:  %d",rowflag);
+		   Rprintf ("\nFile [%s] probably not an SVF file\n",filename);
 		   return;
 		}
 		fread (&npairs,sizeof(short),1,fp);
@@ -147,18 +149,18 @@ short   *min,*max;
 
 
 	bcode = 0;
-	printf ("\n");
+	Rprintf ("\n");
 	if (count_bck > 0) {
-   	   printf ("\n... %d cells of background exterior to the landscape found",
+   	   Rprintf ("\n... %d cells of background exterior to the landscape found",
 		count_bck);
 	   bcode ++;
 	}
 	if (count_intbck > 0) {
- 	   printf ("\n... %d cells of background interior to the landscape found",
+ 	   Rprintf ("\n... %d cells of background interior to the landscape found",
 		count_intbck);
 	   bcode ++;
 	}
 	if (count_bck == 0 && count_intbck == 0) 
-	   printf ("\n... landscape does not contain background");
+	   Rprintf ("\n... landscape does not contain background");
 
 }

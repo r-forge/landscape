@@ -134,6 +134,8 @@ SEXP fragstats(SEXP args) {
 	PROTECT(res = allocVector( INTSXP, 1) );
 	xres = INTEGER(res);
 	xres[0] = 99;
+	
+	UNPROTECT(1);
 	return(res);
 	
 
