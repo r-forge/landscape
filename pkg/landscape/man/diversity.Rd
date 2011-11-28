@@ -6,10 +6,10 @@
 \alias{diversity,RasterLayer,numeric-method}
 \alias{diversity,SpatialPointsDataFrame,Raster-method}
 
-\title{Compute diversity indices}
+\title{diversity indices}
 
 \description{
-describe it here
+Compute diversity indices based for a neighborhood of raster cells. Or for points falling into a raster cell.
 }
 
 \usage{
@@ -20,28 +20,25 @@ describe it here
 
 \arguments{
   \item{x}{A Raster* object or a SpatialPointsDataFrame}
-  \item{y}{numeric or Raster* object}  
+  \item{y}{numeric as in \code{\link{focal}}, or Raster* object}  
   \item{field}{variable to use}  
   \item{fun}{Function or character }  
   \item{...}{Additional arguments as for \code{\link{writeRaster}}}  
 }
 
-\details{
-none 
-}
 
 \value{
 RasterLayer
 }
 
-\seealso{ \code{\link[raster]{aggregate}, \link[raster]{rasterize}} }
+\seealso{ \code{\link[raster]{focal}, \link[raster]{rasterize}} }
 
 \author{Robert J. Hijmans}
 
 \examples{
 r <- raster()
 r[] <- runif(ncell(r))
-x <- diversity(r, 10, 'Shannon')
+x <- diversity(r, 9, 'Shannon')
 }
 
 \keyword{methods}

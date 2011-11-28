@@ -116,7 +116,7 @@
 #include "R_ext/Rdynload.h"
 #include <Rmath.h>
 
-SEXP fragstats(SEXP args) {
+SEXP fragstats(SEXP in, SEXP out, SEXP dim) {
 	short	i,j,k;
 	short	patch_ID;
 	short	max_patch_id;
@@ -126,19 +126,46 @@ SEXP fragstats(SEXP args) {
 	Rprintf ("\n\n\t\t            FRAGSTATS 2.0");
 	Rprintf ("\n\t PROGRAM TO CALCULATE LANDSCAPE FRAGMENTATION");
 	Rprintf (" INDICES \n\n");
-	
+		
+	strcpy(imagename, CHAR(STRING_ELT(in, 0)));
+	strcpy(out_file, CHAR(STRING_ELT(out, 0)));
 
-	SEXP res;
-	int *xres;
-
-	PROTECT(res = allocVector( INTSXP, 1) );
-	xres = INTEGER(res);
-	xres[0] = 99;
+	num_rows = REAL(dim)[0];
+	num_cols = REAL(dim)[1];
+	cellsize = REAL(dim)[2];  /* size of cell in meters    */
 	
-	UNPROTECT(1);
-	return(res);
+	edge_dist = 100;       /* dist from edge - core area*/
+	data_type = 4;       /* type of input image file:  */
 	
-
+	id_image = 2;
+	
+/*  ext_bckgrnd:  optional; value of background cells outside the landscape of interest
+ *  int_bckgrnd:  optional; value of background cells interior to the  landscape
+ *	max_classes:  the maximum number of classes possible (for  patch richness determination)
+ *  weight_file:  optional; the name of a file containing a weight
+ *  id_image      optional; type of ID image:
+ *		      1 - create and output ID image
+ *		      2 - don't output an ID image
+ *                      - the name of an image file containing IDs; the 
+ *		          data_type must be the same as in_image.
+ *   desc_file:    optional; the name of a file containing character
+ *		      descriptors for each patch type.  Each record should
+ *		      contain the numeric patch type (class) and the
+ *		      character descriptor assigned to it.  This file must
+ *	 	      be ascii, with one record for each class type.  The
+ *		      character name must be 10 characters or less.  The 
+ *		      field delimiter can be a comma or spaces.  For 
+ *		      example: 
+ *			    1, shrubs
+ *			    2, conifers
+ *			    etc.
+ *  bound_wght:   the proportion of the landscape boundary and background  class edges to count as edge.
+ * use_diag:     optional; use diagonal in patch finding
+ * prox_dist:    optional; the search radius in meters for calculating the proximity index.
+ * nndist:       optional; calculate nearest neighbor
+ * patch_stats:  optional: print patch level stats
+ *  class_stats:  optional; print class level stats  */
+ 	
 /*
  *  Call a routine that does nothing but declare space for all global
  *  variables.
@@ -150,6 +177,10 @@ SEXP fragstats(SEXP args) {
  */
 //	setup (argc,argv);
 
+ setup();
+ 
+ 
+
 /*
  *  Initialize ....
  */
@@ -160,27 +191,27 @@ SEXP fragstats(SEXP args) {
 
 	total_patches = 0;
 	patch_ID = 0;
-        total_area = 0.0;
-        total_area_sq = 0.0;
-        total_maxarea = -9999.;
-        total_shape = 0.0;
-        total_aw_shape = 0.0;
-        total_fract = 0.0;
+    total_area = 0.0;
+    total_area_sq = 0.0;
+    total_maxarea = -9999.;
+    total_shape = 0.0;
+    total_aw_shape = 0.0;
+    total_fract = 0.0;
 	total_aw_fract = 0.0;
-        total_core_area = 0.0;
-        total_core_index = 0.0;
-        total_core_sq = 0.0;
-        total_contrast = 0.0;
-        total_aw_contrast = 0.0;
-        total_contrast_edge = 0.0;
-        total_nndist = 0.0;
-        total_nndist_sq = 0.0;
+    total_core_area = 0.0;
+    total_core_index = 0.0;
+    total_core_sq = 0.0;
+    total_contrast = 0.0;
+    total_aw_contrast = 0.0;
+    total_contrast_edge = 0.0;
+    total_nndist = 0.0;
+    total_nndist_sq = 0.0;
 	total_prox = 0.0;
-        total_core_patches = 0;
-        total_nn = 0;
+    total_core_patches = 0;
+    total_nn = 0;
 	max_patch_id = 0;
  
-
+ 
 /*
  *  Get a clean copy of the image and then find the length of the 
  *  landscape boundary.
@@ -188,7 +219,7 @@ SEXP fragstats(SEXP args) {
 	read_image(0);
 	boundary = boundary_edge();
 	Rprintf ("\n");
-
+	
 /*
  *  Loop over all classes present.
  */
@@ -198,7 +229,6 @@ SEXP fragstats(SEXP args) {
 	   classarea = 0.0;
 	   num_patches = 0;
 	   all_edge = true_edge = lshape_edge = iji_edge = 0.0;	
-
 /*
  *  Get a clean copy of the image for each class.
  */
@@ -251,6 +281,8 @@ SEXP fragstats(SEXP args) {
    	   }
 	   total_patches += num_patches;
 
+	   
+	   
 /*
  *  If the input image includes a landscape border, then edges
  *  of patches outside the landscape of the current patch type
@@ -280,6 +312,7 @@ SEXP fragstats(SEXP args) {
 	   class_statistics (class,k);
 	}
 
+	
 /*
  * Calculate and print landscape indices.
  */
@@ -287,16 +320,26 @@ SEXP fragstats(SEXP args) {
 
 	landscape_statistics();
 
+	
 /*
  *  Write out ID image
  */
-	if (id_image == 1) write_image(max_patch_id);
+//	if (id_image == 1) write_image(max_patch_id);
 
 /*
  *  Free up space allocated for arrays
  */
 	free_memory();
 
-	Rprintf ("\n");
-	return (0);
+	Rprintf ("\ndone\n");
+	
+	SEXP res;
+	int *xres;
+	PROTECT(res = allocVector( INTSXP, 1) );
+	xres = INTEGER(res);
+	xres[0] = 1;
+	UNPROTECT(1);
+	return(res);
 }
+
+

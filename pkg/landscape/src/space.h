@@ -1,15 +1,15 @@
 /*
  *  Include file space.h
  */
-char	imagename[60];           /* name of input image file            */
-char	out_file[60];            /* basename for output files           */
-char	weight_file[60];         /* name of weight file                 */
-char	id_file[60];             /* name of patch ID image              */
-char	desc_file[60];           /* name of class descriptor file       */
-char	file1[60];               /* name of basename.patch file         */
-char	file2[60];               /* name of basename.class file         */
-char	file3[60];               /* name of basename.land file          */
-char	file4[60];               /* name of basename.full file          */
+char	imagename[255];           /* name of input image file            */
+char	out_file[255];            /* basename for output files           */
+char	weight_file[255];         /* name of weight file                 */
+char	id_file[255];             /* name of patch ID image              */
+char	desc_file[255];           /* name of class descriptor file       */
+char	file1[255];               /* name of basename.patch file         */
+char	file2[255];               /* name of basename.class file         */
+char	file3[255];               /* name of basename.land file          */
+char	file4[255];               /* name of basename.full file          */
 char	contrast_indices;        /* flag; calculate contrast indices    */
 char	proximity;               /* flag; calculate proximity indices   */
 char	id_image;                /* flag; ID image input                */

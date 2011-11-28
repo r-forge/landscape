@@ -23,156 +23,70 @@
 
 
 
-void setup(argc,argv)
-int	argc;
-char	*argv[];
+void setup(  )
 {
 	FILE	*fp,*out;
 	char	newfiles;
-	char	answer[5];
+	//char	answer[5];
 	int	size;
 	time_t	lt;
 	struct  tm *time_ptr;
 
 
-
-/*
- *  Get command line arguments.  If there are no arguments, call a
- *  routine that will prompt the user for all the required inputs. 
- *  If there are fewer arguements than required, issue the usuage 
- *  message.
- */
-	if (argc == 1)
-	   prompt();
-	else {
-	   if (argc < 6) {
-    	      usage();
-	      return;
-	   }
-
-	   strcpy (imagename,argv[1]);      /* input image name          */
-    	   strcpy (out_file,argv[2]);       /* basename for output files */
-	   cellsize = atof(argv[3]);        /* size of cell in meters    */
-	   edge_dist = atof(argv[4]);       /* dist from edge - core area*/
-	   data_type = atoi(argv[5]);       /* type of input image file: 
-                                               svf, ascii, binary)       */
-	   if (data_type < 1 || data_type > 6) {
-	      Rprintf ("\n\nERROR! Unsupported data type!\n\n");
-	      return;
-	   }
-
-	   if (data_type >= 2 && data_type <= 4 && argc < 8) {
-	      usage();                       /* #rows, #cols missing     */
-	      return;
-	   }
-	   if (data_type >= 2 && data_type <= 4) {
-	      num_rows = atoi(argv[6]);     /* number of rows in image   */
-	      num_cols = atoi(argv[7]);     /* number of columns in image*/
-	   }
-	   background = 999;
-	   if (argc >= 9) {
-	      if (strcmp(argv[8],"$") != 0)
-   	         background = atoi(argv[8]);/* value of background cells */
-           }
-	   do_patchrich = FALSE;
-	   if (argc >= 10) {
-	      if (strcmp(argv[9],"$") != 0) {
-	         max_num_classes = atoi(argv[9]); /* max possible classes*/
-	         do_patchrich = TRUE;
-	      }
-	   }	    
-	   contrast_indices = FALSE;
-           if (argc >= 11) {
-	      if (strcmp(argv[10],"$") != 0) { 
-	         strcpy(weight_file,argv[10]);  /* class weights filename*/
-	         contrast_indices = TRUE;
-		 if ((fp=fopen(weight_file,"r")) == NULL) {
-		    Rprintf ("\nERROR! Can not open file: %s\n",weight_file);
-		    return;
-		 }
-		 fclose (fp);
-	      }
- 	   }
-	   id_image = 2;
-	   if (argc >= 12) {
-	      if (strcmp(argv[11],"1") == 0)
-		 id_image = 1;
-	      else if (strcmp(argv[11],"$") == 0 || strcmp(argv[11],"2") == 0)
-	         id_image = 2;
-	      else {
-	         strcpy(id_file,argv[11]);      /* name of ID image      */
-		 id_image = 3;
-		 if ((fp=fopen(id_file,"r")) == NULL) {
-		    Rprintf ("\nERROR! Can not open file: %s\n",id_file);
-		    return;
-		 }
-		 fclose(fp);
-	      }
-	   }
-	   descriptors = FALSE;
-	   if (argc >= 13) {
-	      if (strcmp(argv[12],"$") != 0) {
-	         strcpy(desc_file,argv[12]);   /* class descriptors file */
-	         descriptors = TRUE;
-		 if ((fp=fopen(desc_file,"r")) == NULL) {
-		    Rprintf ("\nERROR! Can not open file: %s\n",desc_file);
-		    return;
-		 }
-		 fclose(fp);
-	      }
-	   } 
-   	   if (argc >= 14) {                   /* weight for boundary/back*/
-	      bound_wght = atof(argv[13]);
-	      if (bound_wght < 0.0 || bound_wght > 1.0) {
-		 Rprintf ("\nERROR! Invalid contrast weight: %f\n",bound_wght);
-		 return;
-	      }
-	   }
-	   use_diags = TRUE;
-	   if (argc >= 15) {
-	      strcpy (answer,argv[14]);     /* use diagonals for patches */
-	      if (answer[0] == 'N' || answer[0] == 'n')
-		 use_diags = FALSE;
-	   }
-	   proximity = FALSE;
-	   if (argc >= 16) {
-	      if (strcmp(argv[15],"$") != 0) {
-		 search_radius = atof(argv[15]);/*proximity search radius*/
-		 proximity = TRUE;
-	      }
-	   }
-	   do_nndist = TRUE;
-	   if (argc >= 17) {
-	      strcpy (answer,argv[16]);     /* do nearest neighbor calcs */
-	      if (answer[0] == 'N' || answer[0] == 'n')
-		 do_nndist = FALSE;
-	   }
-	   patch_stats = TRUE;
-	   if (argc >= 18) {
-	      strcpy (answer,argv[17]);     /* write patch level stats    */
-	      if (answer[0] == 'N' || answer[0] == 'n')
-		 patch_stats = FALSE;
-	   }
-	   class_stats = TRUE;
-	   if (argc == 19) {
-	      strcpy (answer,argv[18]);     /* write class level stats    */
-	      if (answer[0] == 'N' || answer[0] == 'n')
-		 class_stats = FALSE;
-	   }
+//	   strcpy (imagename,argv[1]);      /* input image name          */
+// 	   strcpy (out_file,argv[2]);       /* basename for output files */
+//	   cellsize = atof(argv[3]);        /* size of cell in meters    */
+//	   edge_dist = atof(argv[4]);       /* dist from edge - core area*/
+//	   data_type = atoi(argv[5]);       /* type of input image file: 
+//                                              svf, ascii, binary)       */
+//	   if (data_type < 1 || data_type > 6) {
+//	      Rprintf ("\n\nERROR! Unsupported data type!\n\n");
+//	      return;
+//	   }
+//
+//	   if (data_type >= 2 && data_type <= 4 && argc < 8) {
+//	      usage();                       /* #rows, #cols missing     */
+//	      return;
+//	   }
+//	   if (data_type >= 2 && data_type <= 4) {
+//	      num_rows = atoi(argv[6]);     /* number of rows in image   */
+//	      num_cols = atoi(argv[7]);     /* number of columns in image*/
+//	   }
+	background = 9999;
+	do_patchrich = FALSE;
+	contrast_indices = FALSE;
+	if (contrast_indices) { 
+		contrast_indices = TRUE;
+		if ((fp=fopen(weight_file,"r")) == NULL) {
+			Rprintf ("\nERROR! Can not open file: %s\n",weight_file);
+			return;
+		}
+		fclose (fp);
+    }
+ 	   
+	id_image = 2;
+	descriptors = FALSE;
+	if (descriptors != 0) {
+//		strcpy(desc_file, argv[12]);   /* class descriptors file */
+        descriptors = TRUE;
+		if ((fp=fopen(desc_file,"r")) == NULL) {
+			Rprintf ("\nERROR! Can not open file: %s\n",desc_file);
+			return;
+		}
+		fclose(fp);
 	}
-	
-/* 
- *  Extra dependencies for IDRISI.  If the input file is IDRISI
- *  then descriptors are automatic.
- *  Tom Moore 10-93
- */
-	if (data_type == 6) descriptors = TRUE;
-
+    
+	bound_wght = 0;
+	use_diags = TRUE;
+	proximity = FALSE;
+	do_nndist = TRUE;
+	patch_stats = TRUE;
+	class_stats = TRUE;
 /*
- *  If the user selected to calculate proximity indices and not 
- *  nearest neighbor indices, issue a message that the two go
- *  hand in hand -- you can't do one without the other.
- */
+*  If the user selected to calculate proximity indices and not 
+*  nearest neighbor indices, issue a message that the two go
+*  hand in hand -- you can't do one without the other.
+*/
 	if (proximity && !do_nndist) {
 	   Rprintf ("\n\nERROR!! The proximity indices require all");
 	   Rprintf ("\nthe nearest neighbor calculations.  You must"); 
@@ -184,16 +98,6 @@ char	*argv[];
  *  Print image file name to screen
  */
 	Rprintf ("\nProcessing image: %s",imagename);
-
-
-/*
- *  If the input file is an arc/info SVF file, an ERDAS file, or
- *  an IDRISI file, read the number of rows and columns in the 
- *  image from the file header.  
- */
-	if (data_type == 1 || data_type >= 5) 
-	   read_header (imagename);
-
 
 /*
  *  Convert the core area edge distance from meters to cells.
@@ -217,27 +121,21 @@ char	*argv[];
  *  Allocate space for a patch ID image, if requested.
  */
 	if (id_image != 2) {
-	   id = (short *)calloc ((unsigned)size, sizeof(short));
-	   if (id == NULL) {
+		id = (short *)calloc ((unsigned)size, sizeof(short));
+		if (id == NULL) {
 	      	Rprintf ("\nERROR! Can not allocate space - id map");
-		return;
- 	   }
+			return;
+		}
 	}
 
 /*
  *  If a patch ID file was input, read it in.  
  */
 	if (id_image == 3) {
-	   if (data_type == 1)
-		read_svf (id_file,id,&min_class,&max_class);
 	   if (data_type == 2)
 		read_ascii (id_file,id,&min_class,&max_class);
 	   if (data_type == 3 || data_type == 4)
 		read_binary (id_file,id,data_type-2,&min_class,&max_class);
-	   //if (data_type == 5)
-		//read_erdas (id_file,id,&min_class,&max_class);
-	   //if (data_type == 6)
-		//read_idrisi (id_file,id,&min_class,&max_class);
 	}
 	
 	Rprintf ("\nInterior Background Value: %d",background);
@@ -271,11 +169,7 @@ char	*argv[];
  *  input, read it in.
  */
 	if (descriptors) {
-	  if (data_type == 6) {
-          //   read_idrisi_desc(imagename, name); /* Tom Moore 10-93 */  
-	  } else {
 	     read_classnames(desc_file);
-	  }
 	}
 
 /*
@@ -302,63 +196,57 @@ char	*argv[];
  */
    	strcpy (file1,out_file);   /* patch stats in dump format */ 
    	strcat (file1,".patch");
-        strcpy (file2,out_file);   /* class stats in dump format */
+    strcpy (file2,out_file);   /* class stats in dump format */
  	strcat (file2,".class");
 
    	strcpy (file3,out_file);   /* landscape stats in dump format*/
-
-#ifdef __GO32__
-	strcat (file3,".lnd");     /* for PC version only        */
-#else
-   	strcat (file3,".land");   
-#endif
 
 	strcpy (file4,out_file);   /* formatted file with all stats */
    	strcat (file4,".full");
  
 	if (patch_stats) {
-	   newfiles = FALSE;
-	   if ((out = fopen(file1,"r")) == NULL) newfiles = TRUE;
-	   else fclose (out);
-	   if (newfiles) {
-	      if ((out = fopen(file1,"a")) == NULL) {
-   	         Rprintf ("\nERROR opening file: %s\n",file1);
-	         return;
-	      }
-	      head_patch(out);
-	      fclose (out);
-	   }
+		newfiles = FALSE;
+		if ((out = fopen(file1,"r")) == NULL) newfiles = TRUE;
+		else fclose (out);
+		if (newfiles) {
+			if ((out = fopen(file1,"a")) == NULL) {
+				Rprintf ("\nERROR opening file: %s\n",file1);
+				return;
+			}
+			head_patch(out);
+			fclose (out);
+		}
 	}
 
 	if (class_stats) {
-	   newfiles = FALSE;
-	   if ((out = fopen(file2,"r")) == NULL) newfiles = TRUE;
-	   else fclose (out);
-           if (newfiles) { 
-	      if ((out = fopen(file2,"a")) == NULL) {
-	         Rprintf ("\nERROR opening file: %s\n",file2);
-	         return;
-	      }
-	      head_class(out);
-	      fclose (out);
-	   }
+		newfiles = FALSE;
+		if ((out = fopen(file2,"r")) == NULL) newfiles = TRUE;
+		else fclose (out);
+		if (newfiles) { 
+			if ((out = fopen(file2,"a")) == NULL) {
+				Rprintf ("\nERROR opening file: %s\n",file2);
+				return;
+			}
+			head_class(out);
+			fclose (out);
+		}
 	}
 
 	newfiles = FALSE;
 	if ((out = fopen(file3,"r")) == NULL) newfiles = TRUE;
 	else fclose (out);
 	if (newfiles) {
-	   if ((out = fopen(file3,"a")) == NULL) {
-	      Rprintf ("\nERROR opening file: %s\n",file3);
-	      return;
-	   }
-	   head_land(out);
-	   fclose (out);
+		if ((out = fopen(file3,"a")) == NULL) {
+			Rprintf ("\nERROR opening file: %s\n",file3);
+			return;
+		}
+		head_land(out);
+		fclose (out);
 	}
 
 	if ((out = fopen(file4,"a")) == NULL) {
-	   Rprintf ("\nERROR opening file: %s\n",file4);
-	   return;
+		Rprintf ("\nERROR opening file: %s\n",file4);
+		return;
 	}
 
 /*
@@ -369,8 +257,7 @@ char	*argv[];
 	fprintf (out,"\n\nDate:  %s",asctime(time_ptr));
 	fprintf (out,"Image Name: %s",imagename);
 	fprintf (out,"\nBasename For Output Files: %s",out_file);
-	fprintf (out,"\nRows: %d   Cols: %d   Cellsize: %.1f",
-	   num_rows,num_cols,cellsize);
+	fprintf (out,"\nRows: %d   Cols: %d   Cellsize: %.1f", num_rows,num_cols,cellsize);
 	fprintf (out,"   Data Type: %d",data_type);
 	fprintf (out,"\nEdge Dist: %.1f   ",edge_dist);
 	if (do_patchrich)
@@ -392,8 +279,7 @@ char	*argv[];
 	   fprintf (out,"\nImage Includes a Landscape Border");
   	else
 	   fprintf (out,"\nImage Does Not Include a Landscape Border");
-	fprintf (out,"\nProportion of Boundary/Background to Count as Edge: %.2f",
-	      bound_wght);
+	fprintf (out,"\nProportion of Boundary/Background to Count as Edge: %.2f",  bound_wght);
 	if (use_diags)
 	   fprintf (out,"\nDiagonals Used");
 	else

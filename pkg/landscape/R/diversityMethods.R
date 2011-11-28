@@ -10,6 +10,12 @@ if (!isGeneric("diversity")) {
 }	
 
 
+if (!isGeneric("patchDiversity")) {
+	setGeneric("patchDiversity", function(x, ...)
+		standardGeneric("patchDiversity"))
+}	
+
+
 .getDivFun <- function(fun) {
 	if (!is.function(fun)) {
 		fn <- tolower(fun[1])
@@ -27,22 +33,42 @@ if (!isGeneric("diversity")) {
 }
 
 
+setMethod('patchDiversity', signature(x='RasterLayer'), 
+	function(x, ...) {
+		a <- patchSize(x)[,2]
+		a <- a / sum(a)
+		sum( -1 * a * log(a) )
+	}
+)
+
+setMethod('patchDiversity', signature(x='SpatialPolygons'), 
+	function(x, ...) {
+		a <- patchSize(x)[,2]
+		a <- a / sum(a)
+		sum( -1 * a * log(a) )
+	}
+)
+
+
+
+
 # diversity of raster cells for a given neighborhood defined by y (as in raster::aggregate)
 setMethod('diversity', signature(x='RasterLayer', y='numeric'), 
-function(x, y, fun='richness', ...) {
-	fun <- .getDivFun(fun)
-	aggregate(x, y, fun, ...)
-}
+	function(x, y, fun='richness', ...) {
+		fun <- .getDivFun(fun)
+		y <- round(y)
+		focal(x, y, fun, ...)
+	}
 )
 
 # diversity of raster cells based on point data
 setMethod('diversity', signature(x='SpatialPointsDataFrame', y='Raster'), 
-function(x, y, field=NULL, fun='richness', ...) {
-	if (is.null(field)) {
-		stop('you must provide an argument "field" to indicate\nthe variable in the SpatialPointsDataFrame that you want to use')
+	function(x, y, field=NULL, fun='richness', ...) {
+		if (is.null(field)) {
+			stop('you must provide an argument "field" to indicate\nthe variable in the SpatialPointsDataFrame that you want to use')
+		}
+		fun <- .getDivFun(fun)
+		rasterize(x, y, field=field, fun=fun, ...)
 	}
-	fun <- .getDivFun(fun)
-	rasterize(x, y, field=field, fun=fun, ...)
-}
 )
 

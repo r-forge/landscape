@@ -55,13 +55,11 @@ char	alter_orig;
 		break;
 
 	      case 3:
-                read_binary (imagename,image,data_type-2,&min_class,
-		   &max_class);
+                read_binary (imagename,image,data_type-2,&min_class,  &max_class);
 		break;
 
 	      case 4:
-                read_binary (imagename,image,data_type-2,&min_class,
-		   &max_class);
+                read_binary (imagename,image,data_type-2,&min_class,  &max_class);
 		break;
 
 	      //case 5:
