@@ -1,0 +1,27 @@
+[general] 
+creator=R package 'raster' 
+created= 2011-11-27 20:46:41 
+[georeference] 
+nrows= 100 
+ncols= 100 
+xmin= 0 
+ymin= 0 
+xmax= 10000 
+ymax= 10000 
+projection= NA 
+[data] 
+datatype= INT2U 
+byteorder= little 
+nbands= 1 
+bandorder= BIL 
+categorical= FALSE 
+minvalue= 1 
+maxvalue= 9999 
+nodatavalue= 65535 
+[legend] 
+legendtype=  
+values=  
+color=  
+[description] 
+layername= layer 
+history=  

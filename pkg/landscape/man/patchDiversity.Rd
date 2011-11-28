@@ -33,6 +33,7 @@ Compute the Shannon diversity index for patches.
 \examples{
 f <- system.file("exdata/fragstats.grd", package="landscape")
 r <- raster(f)
+r[r == 9999] <- NA
 patchDiversity(r)
 }
 
