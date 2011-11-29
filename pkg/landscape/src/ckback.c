@@ -37,12 +37,12 @@ short	*imageptr;
 	Rprintf ("\nVerifying that background patches are classified correctly ....\n");
 
 	for (i=0; i < num_rows; i++) {
-	   for (j=0; j < num_cols; j++) {
+		for (j=0; j < num_cols; j++) {
 
-	      exterior_background = FALSE;
-	      interior_background = FALSE;
-	      positive = FALSE;
-	      negative = FALSE;
+			exterior_background = FALSE;
+			interior_background = FALSE;
+			positive = FALSE;
+			negative = FALSE;
 
 /*
  *  Look for a background patch in the image.  The "read" routines set
@@ -50,30 +50,29 @@ short	*imageptr;
  *  to -990.  Verify that the -999 cells are exterior and the -990 cells
  *  are interior.  Change if not and report to the user.
  */
-	      value = getshort (imageptr,num_cols,i,j);
-	      if (value == -999 || value == -990) {
+			value = getshort (imageptr,num_cols,i,j);
+			if (value == -999 || value == -990) {
+				numpts = get_patch(j,i,value);
 
-	         numpts = get_patch(j,i,value);
+				for (k=0; k < numpts; k++) {
+					x = stackx[k];
+					y = stacky[k];
+					image_edge = FALSE;
 
-		 for (k=0; k < numpts; k++) {
-		    x = stackx[k];
-		    y = stacky[k];
-		    image_edge = FALSE;
-
-		    for (n=0; n < 4; n++) {
-		       xptr = x + xpos[n];
-		       if (xptr < 0 || xptr >= num_cols) image_edge = TRUE;
-		       yptr = y + ypos[n];
-	 	       if (yptr < 0 || yptr >= num_rows) image_edge = TRUE;
+					for (n=0; n < 4; n++) {
+						xptr = x + xpos[n];
+						if (xptr < 0 || xptr >= num_cols) image_edge = TRUE;
+						yptr = y + ypos[n];
+						if (yptr < 0 || yptr >= num_rows) image_edge = TRUE;
 
 /*
  *  If an image edge is encountered, then this patch could not be interior
  *  to the landscape.
  */
-		       if (image_edge) {
- 		          exterior_background = TRUE;
-			  break;
-		       }
+						if (image_edge) {
+							exterior_background = TRUE;
+							break;
+						}
 
 /*
  *  Go through all cells in the patch.  If an image edge is never reached, 
@@ -84,63 +83,61 @@ short	*imageptr;
  *  or interior to the landscape.  Issue a warning about these patches and
  *  continue.
  */
-		       neighbor = getshort (imageptr,num_cols,yptr,xptr);
-		       if (neighbor == -777) continue;
+						neighbor = getshort (imageptr,num_cols,yptr,xptr);
+						if (neighbor == -777) continue;
 
-		       if (!positive && neighbor >= 0) positive = TRUE;
-		       if (!negative && neighbor < 0)  negative = TRUE;
+						if (!positive && neighbor >= 0) positive = TRUE;
+						if (!negative && neighbor < 0)  negative = TRUE;
 
-		    }  /* end neighbors loop (n)  */
+					}  /* end neighbors loop (n)  */
 
-		    if (exterior_background) break;
+					if (exterior_background) break;
 
-		 }   /* end numpt points loop (k) */
+				}   /* end numpt points loop (k) */
 
 /*
  *  Verify the patch has been classified correctly as interior or exterior.
  */
-		 if (exterior_background) {
-		    negative = TRUE;
-		    positive = FALSE;
-	         }
-	         else {
-	 	    if (positive && !negative) interior_background = TRUE;
-		    if (negative && !positive) exterior_background = TRUE;
-		 }
+				if (exterior_background) {
+					negative = TRUE;
+					positive = FALSE;
+				} else {
+					if (positive && !negative) interior_background = TRUE;
+					if (negative && !positive) exterior_background = TRUE;
+				}
 
 
-		 if (positive && negative)  {
-		    Rprintf ("\n\n   WARNING!  A background patch containing the cell row %d",i);
-		    Rprintf ("\n   col %d (size: %d) borders the landscape boundary.  It has been",
-                       j,numpts);
-		    if (value == -990) Rprintf ("\n   classified as interior background.");
-		    if (value == -999) Rprintf ("\n   classified as exterior background.");
-		    Rprintf ("  If this classification is wrong ");
-		    Rprintf ("\n   these indices may be wrong:  total edge, edge density, landscape");
-		    Rprintf ("\n   shape, contrast weighted edge density, and total edge contrast index.");
+				if (positive && negative)  {
+					Rprintf ("\n\n   WARNING!  A background patch containing the cell row %d",i);
+					Rprintf ("\n   col %d (size: %d) borders the landscape boundary.  It has been", j,numpts);
+					if (value == -990) Rprintf ("\n   classified as interior background.");
+					if (value == -999) Rprintf ("\n   classified as exterior background.");
+					Rprintf ("  If this classification is wrong ");
+					Rprintf ("\n   these indices may be wrong:  total edge, edge density, landscape");
+					Rprintf ("\n   shape, contrast weighted edge density, and total edge contrast index.");
 
-		    if (background < 0) {
-			Rprintf ("\n   Fragstats expects a positive value for background and you");
-		        Rprintf ("\n   entered %d which would cause these problems.\n",background);
-		    }
+					if (background < 0) {
+						Rprintf ("\n   Fragstats expects a positive value for background and you");
+						Rprintf ("\n   entered %d which would cause these problems.\n",background);
+					}
 
-		 }
+				}
 
-		 if (interior_background && value != -990 ) {
-		    Rprintf ("\n   WARNING! reclassifying exterior background patch to interior -");
-	            Rprintf ("  %d cells",numpts);
-		    for (k=0; k < numpts; k++)
-		       setshort (imageptr,num_cols,stacky[k],stackx[k],-890);
-		 }
-		 if (exterior_background && value != -999 ) {
-		    Rprintf ("\n   WARNING! reclassifying interior background patch to exterior -");
-	            Rprintf (" %d cells",numpts);
-		    for (k=0; k < numpts; k++)
-		       setshort (imageptr,num_cols,stacky[k],stackx[k],-899);
-		 }
+				if (interior_background && value != -990 ) {
+					Rprintf ("\n   WARNING! reclassifying exterior background patch to interior -");
+					Rprintf ("  %d cells",numpts);
+					for (k=0; k < numpts; k++)
+						setshort (imageptr,num_cols,stacky[k],stackx[k],-890);
+				}
+				if (exterior_background && value != -999 ) {
+					Rprintf ("\n   WARNING! reclassifying interior background patch to exterior -");
+					Rprintf (" %d cells",numpts);
+					for (k=0; k < numpts; k++)
+						setshort (imageptr,num_cols,stacky[k],stackx[k],-899);
+				}
 
-	      }  /* end if value == -999 || value == -990 loop  */
-	   }     /* end num_cols loop  */
+			}  /* end if value == -999 || value == -990 loop  */
+		}     /* end num_cols loop  */
 	}        /* end num rows loop  */
 
 	Rprintf ("\n");
@@ -151,13 +148,13 @@ short	*imageptr;
 
 	temp = imageptr;
 	for (n=0; n < num_rows*num_cols; n++) {
-	   if (*temp == -777) 
-	      *temp = -999;
-	   else if (*temp == -890) 
- 	      *temp = -990;
-	   else if (*temp == -899) 
-	      *temp = -999;
-	   temp ++;
+		if (*temp == -777) 
+			*temp = -999;
+		else if (*temp == -890) 
+			*temp = -990;
+		else if (*temp == -899) 
+			*temp = -999;
+		temp ++;
 	}
 	
 
@@ -167,6 +164,5 @@ short	*imageptr;
  *  clean copy of the input image it gets "orig_image".  "orig_image"
  *  will now include these interior background patches.
  */
-
 	read_image (1);
 }

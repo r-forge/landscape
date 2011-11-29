@@ -6,31 +6,17 @@
  *
  *  Command Line Arguments:
  *	image_name:   name of input image file
- *  base_name:    basename for output files;  the extensions
- *		      .patch, .class, .land, .full will be added to
- *		      the basename for output files.
+ *  base_name:    basename for output files;  the extensions .patch, .class, .land, .full will be added to the basename for output files.
  *	cellsize:     size of cells in meters (cells must be square)
  *	edge_dist:    the distance from patch edges to use in determing core area
- *	data_type:    type of image file:  1 - arc/info SVF file,
- *		      		  2 - ascii file,      3 - 8 bit binary stream file
- *                    4 - 16 bit binary    5 - ERDAS file
- *                    6 - IDRISI
- *  #rows:        if data_type is not 1, 5, or 6 , the number of rows 
- *		      in the image is required (assumes no image header)
- *	#cols:        if data_type is not 1, 5 or 6, the number of columns
- *		      in the image is required (assumes no image header)
- *      ext_bckgrnd:  optional; value of background cells outside the
- *		      landscape of interest
- *      int_bckgrnd:  optional; value of background cells interior to the
- *		      landscape
- *	max_classes:  the maximum number of classes possible (for
- *		      patch richness determination)
- *      weight_file:  optional; the name of a file containing a weight
- * 		      for every combination of patch type (class).  The
- *		      patch type (class) must be a numeric.  This file
- *		      must be ascii, with one record for each combination.
- *		      The field delimiter can be a comma or spaces.  For
- *		      example:
+ *  rows:     the number of rows in the image
+ *	cols:     the number of columns in the image
+ *  ext_bckgrnd:  optional; value of background cells outside the landscape of interest
+ *  int_bckgrnd:  optional; value of background cells interior to the landscape
+ *	max_classes:  the maximum number of classes possible (for patch richness determination)
+ *  weight_file:  optional; the name of a file containing a weight for every combination of patch type (class).  The
+ *		      patch type (class) must be a numeric.  This file must be ascii, with one record for each combination.
+ *		      The field delimiter can be a comma or spaces.  For example:
  *			    1, 2, .377
  *			    1, 3, .122
  &			    1, 4, .500
@@ -51,17 +37,12 @@
  *			    1, shrubs
  *			    2, conifers
  *			    etc.
- *      bound_wght:   the proportion of the landscape boundary and background
- *		      class edges to count as edge.
+ *      bound_wght:   the proportion of the landscape boundary and background class edges to count as edge.
  *      use_diag:     optional; use diagonal in patch finding
- *      prox_dist:    optional; the search radius in meters for calculating
- *                    the proximity index.
+ *      prox_dist:    optional; the search radius in meters for calculating the proximity index.
  *      nndist:       optional; calculate nearest neighbor
  *      patch_stats:  optional: print patch level stats
  *      class_stats:  optional; print class level stats
- *
- *      NOTE:  use a "$" to skip optional parameters
- *	
  *
  *  Programmer:  Barbara Marks
  *
@@ -71,36 +52,22 @@
  *
  *  Modifications:
  *	10-93 Tom Moore:
- *	 (1)  Added IDRISI driver
  *	 (2)  Greatly speeded up the nearest neighbor calculations
  *	 (3)  Changed the way class descriptors are stored
- *       (4)  Ported to DOS
+ *   (4)  Ported to DOS
  *
- *      03-94 Barbara Marks   Major Changes for version 2.0
- *	 (1)  Nearest neighbor distance changed.  Before reported
- *	      the distance from the center of one edge cell to the
- *	      center of its nearest neighbor edge cell.  Now report
- *	      the edge to edge (not center to center) distance.
- *	 (2)  The weight for the landscape boundary and any back-
- *	      ground class edges can now be any proportion between
- *	      0 and 1.  Before, limited to 0 (no contrast) or 1
- *	      (maximum contrast).
- *       (3)  The name for the output .land file has been changed
- *	      to .lnd for the PC version ONLY!  Since DOS shortens
- *	      file extensions to 3 characters, the .lan extension
- *	      conflicted with ERDAS file naming conventions.
- *       (4)  The name for the output ID image has been changed. 
- *	      Now the output name will be the input image name, up
- *	      to the first dot (".") encountered, with the extension
- *            .ID added.  Before it was just imagename + .ID.  Since
- *	      DOS can't handle names like test.dat.ID, this corrects
- *	      the problem.
- *       (5)  Miscellaneous little bugs fixed and improvements
- *	      made.
+ *   03-94 Barbara Marks   Major Changes for version 2.0
+ *	 (1)  Nearest neighbor distance changed.  Before reported the distance from the center of one edge cell to the
+ *	      center of its nearest neighbor edge cell.  Now report the edge to edge (not center to center) distance.
+ *	 (2)  The weight for the landscape boundary and any background class edges can now be any proportion between
+ *	      0 and 1.  Before, limited to 0 (no contrast) or 1 (maximum contrast).
+ *   (3)  The name for the output .land file has been changed to .lnd for the PC version ONLY!  Since DOS shortens
+ *	      file extensions to 3 characters, the .lan extension conflicted with ERDAS file naming conventions.
+ *   (4)  The name for the output ID image has been changed. Now the output name will be the input image name, up
+ *	      to the first dot (".") encountered, with the extension .ID added.  Before it was just imagename + .ID.  Since
+ *	      DOS can't handle names like test.dat.ID, this corrects the problem.
+ *   (5)  Miscellaneous little bugs fixed and improvements made.
  *	
- *
- *
- *
  *	2011 RJ Hijmans
  *		Major changes for use with R
  *
@@ -123,8 +90,7 @@ SEXP fragstats(SEXP in, SEXP out, SEXP dim) {
 	short	class;
  	int	numpts;
 
-	Rprintf ("\n\n\t\t            FRAGSTATS 2.0");
-	Rprintf ("\n\t PROGRAM TO CALCULATE LANDSCAPE FRAGMENTATION");
+	Rprintf ("\n\n\t\tFRAGSTATS 2.0");
 	Rprintf (" INDICES \n\n");
 		
 	strcpy(imagename, CHAR(STRING_ELT(in, 0)));
@@ -138,6 +104,15 @@ SEXP fragstats(SEXP in, SEXP out, SEXP dim) {
 	data_type = 4;       /* type of input image file:  */
 	
 	id_image = 2;
+
+	background = 9999;
+	
+/*
+ *  Convert the core area edge distance from meters to cells.
+ *  "min_dist" is defined in stats.h.
+ */
+	min_dist = (int) (edge_dist / cellsize + .5);
+	
 	
 /*  ext_bckgrnd:  optional; value of background cells outside the landscape of interest
  *  int_bckgrnd:  optional; value of background cells interior to the  landscape
@@ -175,11 +150,8 @@ SEXP fragstats(SEXP in, SEXP out, SEXP dim) {
 /*
  *  Get arguments and read in files, etc.
  */
-//	setup (argc,argv);
 
- setup();
- 
- 
+    setup();
 
 /*
  *  Initialize ....

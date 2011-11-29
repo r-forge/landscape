@@ -23,36 +23,13 @@
 
 
 
-void setup(  )
+void setup()
 {
 	FILE	*fp,*out;
-	char	newfiles;
-	//char	answer[5];
 	int	size;
 	time_t	lt;
 	struct  tm *time_ptr;
 
-
-//	   strcpy (imagename,argv[1]);      /* input image name          */
-// 	   strcpy (out_file,argv[2]);       /* basename for output files */
-//	   cellsize = atof(argv[3]);        /* size of cell in meters    */
-//	   edge_dist = atof(argv[4]);       /* dist from edge - core area*/
-//	   data_type = atoi(argv[5]);       /* type of input image file: 
-//                                              svf, ascii, binary)       */
-//	   if (data_type < 1 || data_type > 6) {
-//	      Rprintf ("\n\nERROR! Unsupported data type!\n\n");
-//	      return;
-//	   }
-//
-//	   if (data_type >= 2 && data_type <= 4 && argc < 8) {
-//	      usage();                       /* #rows, #cols missing     */
-//	      return;
-//	   }
-//	   if (data_type >= 2 && data_type <= 4) {
-//	      num_rows = atoi(argv[6]);     /* number of rows in image   */
-//	      num_cols = atoi(argv[7]);     /* number of columns in image*/
-//	   }
-	background = 9999;
 	do_patchrich = FALSE;
 	contrast_indices = FALSE;
 	if (contrast_indices) { 
@@ -94,22 +71,11 @@ void setup(  )
 	   Rprintf ("\nyou want to calculate proximity indices!");
 	   Rprintf ("\nExiting ....\n");
 	}
-/*
- *  Print image file name to screen
- */
-	Rprintf ("\nProcessing image: %s",imagename);
-
-/*
- *  Convert the core area edge distance from meters to cells.
- *  "min_dist" is defined in stats.h.
- */
-	min_dist = (int) (edge_dist / cellsize + .5);
 
 /*
  *  Allocate space to hold the image file. 
  */
 	size = num_rows * num_cols;
-
 	image = (short *) calloc ((unsigned)size,sizeof(short));
 	if (image == NULL) {
 	   Rprintf ("\nERROR! Can not allocate space for input");
@@ -128,49 +94,35 @@ void setup(  )
 		}
 	}
 
-/*
- *  If a patch ID file was input, read it in.  
- */
+/*  If a patch ID file was input, read it in.  */
 	if (id_image == 3) {
-		read_binary (id_file,id,data_type-2,&min_class,&max_class);
+		read_binary (id_file, id, &min_class, &max_class);
 	}
 	
 	Rprintf ("\nInterior Background Value: %d",background);
 	Rprintf ("\nExterior Background Value: %d",-background);
 
-/*
- *  Read in image data
- */
-	read_image (0,&bcode);
+/*  Read in image data */
+	read_image (0, &bcode);
 
-
-/*
- *  Read in weight file if one was specified
- */
+/* Read in weight file if one was specified */
 	if (contrast_indices) read_weights(weight_file);
 
-/*
- *  Find the number of patch types, and the maximum patch size in 
+/*  Find the number of patch types, and the maximum patch size in 
  *  the image.  These are needed to dynamically allocate memory for 
  *  several arrays.  (This requires a pass through the image and
- *  time to find all patches!)	
- */
-	get_sizes ();
-
+ *  time to find all patches!) */
+ 
+	get_sizes();
 	allocate_memory();
 	
-
-
-/*
- *  If a file containing character descriptors for each class type was
- *  input, read it in.
- */
+/* If a file containing character descriptors for each class type was
+ * input, read it in. */
 	if (descriptors) {
 	     read_classnames(desc_file);
 	}
 
-/*
- *  7-19-94 BJM  If only negative or only postive background patches were
+/* 7-19-94 BJM  If only negative or only postive background patches were
  *  found in the image, verify that these patches were classified correctly.
  *  If the user did not follow the convention of classifying internal 
  *  background patches as postive and external patches as negative, this
@@ -178,68 +130,48 @@ void setup(  )
  *  patches were found, the user probably knows what he's doing, so don't
  *  bother checking.  (bcode is returned from the read routines:  0 is no
  *  background, 1 = positive or negative found, 2 = positive and negative 
- *  found)
- */
+ *  found) */
 	if (bcode == 1) {
 	   read_image (0);
 	   check_background (image);
 	}
 
 
-/*
- *  Open output files.  Check to see if they exist first.  If they
+/*  Open output files.  Check to see if they exist first.  If they
  *  don't, then header information will be added to the files.  If
- *  they do, just append data records.
- */
+ *  they do, just append data records.  */
    	strcpy (file1,out_file);   /* patch stats in dump format */ 
    	strcat (file1,".patch");
     strcpy (file2,out_file);   /* class stats in dump format */
  	strcat (file2,".class");
-
    	strcpy (file3,out_file);   /* landscape stats in dump format*/
-
 	strcpy (file4,out_file);   /* formatted file with all stats */
    	strcat (file4,".full");
  
 	if (patch_stats) {
-		newfiles = FALSE;
-		if ((out = fopen(file1,"r")) == NULL) newfiles = TRUE;
-		else fclose (out);
-		if (newfiles) {
-			if ((out = fopen(file1,"a")) == NULL) {
-				Rprintf ("\nERROR opening file: %s\n",file1);
-				return;
-			}
-			head_patch(out);
-			fclose (out);
+		if ((out = fopen(file1,"a")) == NULL) {
+			Rprintf ("\nERROR opening file: %s\n",file1);
+			return;
 		}
+		head_patch(out);
+		fclose (out);
 	}
 
 	if (class_stats) {
-		newfiles = FALSE;
-		if ((out = fopen(file2,"r")) == NULL) newfiles = TRUE;
-		else fclose (out);
-		if (newfiles) { 
-			if ((out = fopen(file2,"a")) == NULL) {
-				Rprintf ("\nERROR opening file: %s\n",file2);
-				return;
-			}
-			head_class(out);
-			fclose (out);
-		}
-	}
-
-	newfiles = FALSE;
-	if ((out = fopen(file3,"r")) == NULL) newfiles = TRUE;
-	else fclose (out);
-	if (newfiles) {
-		if ((out = fopen(file3,"a")) == NULL) {
-			Rprintf ("\nERROR opening file: %s\n",file3);
+		if ((out = fopen(file2,"a")) == NULL) {
+			Rprintf ("\nERROR opening file: %s\n",file2);
 			return;
 		}
-		head_land(out);
+		head_class(out);
 		fclose (out);
 	}
+
+	if ((out = fopen(file3,"a")) == NULL) {
+		Rprintf ("\nERROR opening file: %s\n",file3);
+		return;
+	}
+	head_land(out);
+	fclose (out);
 
 	if ((out = fopen(file4,"a")) == NULL) {
 		Rprintf ("\nERROR opening file: %s\n",file4);

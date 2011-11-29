@@ -27,8 +27,6 @@ short *image_ptr;
 short option;
 {
 	FILE	*fp;
-	short	i;
-
 
 /*
  *  Open output image file
@@ -39,20 +37,11 @@ short option;
 	}
 
 /*
- *  Write 8 or 16 bit binary stream file
+ *  Write 16 bit binary stream file
  */
-	if (option == 1) {
-	   Rprintf ("\nWriting 8 bit binary file ... \n");
-	   for (i=0; i < num_rows*num_cols; i++) {
-	      fputc ((unsigned char)*image_ptr,fp);
-	      image_ptr ++;
-	   }
-	}
 
-	else {
-	   Rprintf ("\nWriting 16 bit binary file ... \n");
-	   fwrite (image_ptr,sizeof(short),num_rows*num_cols,fp);
-	}
+   Rprintf ("\nWriting 16 bit binary file ... \n");
+   fwrite (image_ptr,sizeof(short),num_rows*num_cols,fp);
 
 	fclose (fp);
 }

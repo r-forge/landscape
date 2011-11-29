@@ -34,28 +34,25 @@ static void copyimage();
 void read_image (alter_orig)
 char	alter_orig;
 {
-
   	static short *orig_image=(void *)0;
 
+    if (!orig_image) {
+		orig_image = (short *) calloc ((unsigned)num_rows*num_cols,sizeof(short));
+		if (orig_image == NULL) {
+			Rprintf ("\nERROR! Can not allocate space for image copy\n");
+			return;
+		}
 
-        if (!orig_image) {
-	   orig_image = (short *) calloc ((unsigned)num_rows*num_cols,sizeof(short));
-	   if (orig_image == NULL) {
-	      Rprintf ("\nERROR! Can not allocate space for image copy\n");
-	      return;
-	   }
+        read_binary (imagename,image, &min_class,  &max_class);
 
-        read_binary (imagename,image, data_type-2, &min_class,  &max_class);
+		copyimage(image,orig_image);
+		
+	} else if (alter_orig) {
+		copyimage(image, orig_image);
 
-	   copyimage(image,orig_image);
+	} else {
+		copyimage(orig_image, image);
 	}
-
-	else if (alter_orig)
-	   copyimage(image,orig_image);
-
-	else 
-	  copyimage(orig_image,image);
-
 }
 
 
@@ -63,7 +60,6 @@ static void copyimage(in,out)
 short *in, *out;
 {
   	int i;
-
   	for (i=0; i<num_rows*num_cols; i++)
-    	   *out++ = *in++;
+		*out++ = *in++;
 }
