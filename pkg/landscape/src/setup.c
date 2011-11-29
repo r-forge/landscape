@@ -132,9 +132,6 @@ void setup(  )
  *  If a patch ID file was input, read it in.  
  */
 	if (id_image == 3) {
-	   if (data_type == 2)
-		read_ascii (id_file,id,&min_class,&max_class);
-	   if (data_type == 3 || data_type == 4)
 		read_binary (id_file,id,data_type-2,&min_class,&max_class);
 	}
 	

@@ -45,31 +45,7 @@ char	alter_orig;
 	      return;
 	   }
 
-	   switch (data_type) {
-  	      case 1:
-                read_svf (imagename,image,&min_class,&max_class);
-		break;
-
-	      case 2:
-                read_ascii (imagename,image,&min_class,&max_class);
-		break;
-
-	      case 3:
-                read_binary (imagename,image,data_type-2,&min_class,  &max_class);
-		break;
-
-	      case 4:
-                read_binary (imagename,image,data_type-2,&min_class,  &max_class);
-		break;
-
-	      //case 5:
-	      //  read_erdas (imagename,image,&min_class,&max_class);
-		//break;
-
-	     // case 6:
-         //      read_idrisi (imagename,image,&min_class,&max_class);
-		//break;
-	   }
+        read_binary (imagename,image, data_type-2, &min_class,  &max_class);
 
 	   copyimage(image,orig_image);
 	}

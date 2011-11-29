@@ -18,7 +18,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "stats.h"
-#include "erdas.h"
 #include <R.h>
 
 
@@ -55,56 +54,10 @@ short	max_patch_id;
  *  input -- the .ID does not get appended to the name.  So the input
  *  image was overwritten!  (Used to be "strcat(out,".ID"))
  */
-        strcat(outname,".ID");
+    strcat(outname,".ID");
 	Rprintf ("\nOutput ID file is: %s\n",outname);
 
-
-	switch (data_type) {
-	   case 1:                      /*  SVF file   */
-              write_svf(outname,id);
-	      break;
-
-	   case 2:                      /*  Ascii file */
-              write_ascii (outname,id);
-	      break;
-
-	   case 3:                      /* 8-bit binary file */
-              if (max_patch_id > 255) {
-                 Rprintf ("\nOutput ID file will be 16 bit -- patch IDs");
-                 Rprintf ("\nexceed 255 [limit of an 8 bit image].");
-		 write_binary (outname,id,2);
-              }
-	      else 
-                 write_binary (outname,id,1);
-
-	      break;
-          
-	   case 4:                      /* 16 bit binary file */
-	      write_binary (outname,id,2);
-	      break;
- 
-        //   case 5:                      /* ERDAS file   */
-/*
- *  3-10-95  ERROR!  Used to say packtype 0 was 4 bit image,
- *  packtype 1 was 8 bit.  An 8 bit image is packtype 0 and
- *  a 4-bit image is packtype 1!  Fixing!
- */
-	    //  packtype = 1;             /* 4 bit image  */
-	    //  if (max_patch_id > 15)
-		// packtype = 0;          /* 8 bit image  */
-	    //  if (max_patch_id > 255)
-		// packtype = 2;          /* 16 bit image */
-              
-	    //  write_erdas (outname,id,packtype);
-	    //  break;
-
-	   // case 6:                     /* IDRISI file  */
-	    //  packtype = 1;             /* 8 bit image  */
-	    //  if (max_patch_id > 255)
-		// packtype = 2;          /* 16 bit image */
-
-        //      write_idrisi(outname,id,2);
-	      
-	}
-
+    write_binary (outname,id,2);
 }
+
+
