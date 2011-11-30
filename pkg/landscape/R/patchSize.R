@@ -10,7 +10,6 @@ if (!isGeneric("patchSize")) {
 }	
 
 
-# diversity of raster cells for a given neighborhood defined by y (as in raster::aggregate)
 setMethod('patchSize', signature(x='RasterLayer'), 
 function(x, ...) {
 
@@ -39,12 +38,6 @@ function(x, ...) {
 setMethod('patchSize', signature(x='SpatialPolygons'), 
 function(x, id=NULL, ...) {
 
-	p <- is.projected(x) # with raster > 1.9-47) , this could be
-						 # if (raster:::.couldBeLonLat(x)) {
-	if (is.na(p)) {
-		stop('CRS of "x" is unknown')
-	}
-
 	if (is.null(id)) {
 		patch <- row.names(x)
 	} else {
@@ -57,7 +50,7 @@ function(x, id=NULL, ...) {
 		}
 	}
 
-	if (!p) {
+	if (raster:::.couldBeLonLat(raster(x))) {
 		require(geosphere)
 		x <- areaPolygon(x)
 	} else {

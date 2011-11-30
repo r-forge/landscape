@@ -1,5 +1,5 @@
 
-setClass('Patch',	
+setClass('.Patch',	
 	representation (
 		n = 'integer'
 	),
@@ -11,7 +11,7 @@ setClass('Patch',
 
 setClass('RasterPatch',  contains=c('RasterLayer'),	
 	representation (
-		patch = 'Patch'
+		patch = '.Patch'
 	)
 )
 
